@@ -1,0 +1,4 @@
+{
+  "r": "ts-node/register",
+  "file": "./src/test/setup.ts"
+}

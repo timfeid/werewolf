@@ -1,0 +1,50 @@
+{
+  "name": "@salem/server",
+  "version": "0.1.9",
+  "description": "test server",
+  "author": "<sv2@github.com>",
+  "private": true,
+  "scripts": {
+    "start": "yarn build && node dist/server.js",
+    "build": "tsc",
+    "test": "NODE_ENV=test ts-mocha 'src/**/*.test.ts' --exit"
+  },
+  "dependencies": {
+    "@salem/common": "^0.1.9",
+    "@salem/ui": "^0.1.9",
+    "bcrypt": "^3.0.6",
+    "dotenv": "^8.1.0",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.8.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-jwt": "^3.6.0",
+    "koa-qs": "^2.0.0",
+    "koa-router": "^7.4.0",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "typeorm": "^0.2.19",
+    "typescript": "^3.6.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/chai": "^4.2.3",
+    "@types/dotenv": "^6.1.1",
+    "@types/faker": "^4.1.6",
+    "@types/joi": "^14.3.3",
+    "@types/jsonwebtoken": "^8.3.4",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-qs": "^2.0.0",
+    "@types/koa-router": "^7.0.42",
+    "@types/mocha": "^5.2.7",
+    "@types/supertest": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
+    "chai": "^4.2.0",
+    "faker": "^4.1.0",
+    "mocha": "^6.2.1",
+    "sqlite3": "^4.1.0",
+    "supertest": "^4.0.2",
+    "ts-mocha": "^6.0.0"
+  }
+}
