@@ -1,9 +1,7 @@
+import { createConnection } from '@salem/data'
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import qs from 'koa-qs'
-import { resolve } from 'path'
-import { createConnection } from 'typeorm'
-import { config } from './config'
 import { jwtMiddleware } from './middleware/jwt'
 import { setupProtectedRoutes, setupPublicRoutes } from './routes'
 
@@ -15,16 +13,12 @@ app.use(setupPublicRoutes())
 app.use(jwtMiddleware)
 app.use(setupProtectedRoutes())
 
-const db = createConnection({
-  ...config.database,
-  synchronize: true,
-  entities: [
-    resolve(__dirname, 'components/**/*.entity.js'),
-    resolve(__dirname, 'components/**/*.entity.ts')
-  ]
-}).then(() => {
+createConnection().then(() => {
   app.emit('ready')
+}).catch(e => {
+  console.error(e)
+  process.exit(-1)
 })
 
-export { app, db }
+export { app }
 

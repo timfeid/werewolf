@@ -11,8 +11,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@/*": [
-        "src/*"
+      "@salem/*": [
+        "packages/*"
       ],
       "*": [
         "node_modules/*"

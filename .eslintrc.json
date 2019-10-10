@@ -1,6 +1,6 @@
 {
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint/eslint-plugin"
   ],
   "root": true,
   "env": {

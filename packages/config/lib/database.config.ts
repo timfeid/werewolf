@@ -3,21 +3,16 @@ import path from 'path'
 import { ConnectionOptions } from 'typeorm'
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
 import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions'
+import { validate } from './validate'
 
-const envSchema = joi.object({
+const value = validate(joi.object({
   DB_DRIVER: joi.string().valid('postgres', 'sqlite'),
   DB_HOSTNAME: joi.string().optional(),
   DB_USERNAME: joi.string().optional(),
   DB_DATABASE: joi.string().optional(),
   DB_PASSWORD: joi.string().optional(),
   DB_PORT: joi.number().optional(),
-}).unknown().required()
-
-const {error, value} = joi.validate(process.env, envSchema)
-
-if (error) {
-  throw error
-}
+}).unknown().required())
 
 interface DatabaseDrivers {
   postgres: PostgresConnectionOptions,

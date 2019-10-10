@@ -1,19 +1,19 @@
+import { User } from '@salem/data'
+import { UserFactory } from '@salem/factories'
+import { JwtService } from '@salem/services'
 import { expect } from 'chai'
 import { request } from '../../test/helpers'
-import { sign } from '../jwt/jwt.service'
-import { User } from '../user/user.entity'
-import userFactory from '../user/user.factory'
 
 describe('user controller', () => {
   let user: User
   before(async () => {
-    user = await userFactory()
+    user = await UserFactory.create()
     await user.save()
   })
 
   it('can get /user', async () => {
     const response = await request('get', '/user', {
-      token: sign(user)
+      token: JwtService.sign(user)
     })
 
     expect(response.status).to.eq(200)

@@ -1,6 +1,6 @@
+import { User } from '@salem/data'
 import supertest from 'supertest'
 import { app } from '../app'
-import { User } from '../components/user/user.entity'
 
 interface RequestSettings {
   token?: string;

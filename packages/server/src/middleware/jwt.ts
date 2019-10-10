@@ -1,8 +1,8 @@
+import { config } from '@salem/config'
 import koaJwt from 'koa-jwt'
-import { publicKey } from '../components/jwt/jwt.service'
 
 const jwtMiddleware = koaJwt({
-  secret: publicKey
+  secret: config.crypt.jwtPublicKey
 })
 
 export { jwtMiddleware }

@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import commonModule from '@salem/common'
+
 
 export default {
   name: 'HelloWorld',
@@ -50,8 +50,6 @@ export default {
   },
   data () {
     return {
-      commonModuleInfo: commonModule.getInfo(),
-      commonModuleName: commonModule.getInfo().name
     }
   },
   mounted: function () {

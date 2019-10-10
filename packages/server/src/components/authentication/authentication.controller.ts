@@ -1,6 +1,5 @@
+import { JwtService, UserService } from '@salem/services'
 import { Context } from 'koa'
-import { sign } from '../jwt/jwt.service'
-import { UserService } from '../user/user.service'
 
 export class AuthenticationController {
   public static async login (ctx: Context) {
@@ -9,7 +8,7 @@ export class AuthenticationController {
     ctx.assert(user, 401)
 
     ctx.body = {
-      token: sign(user)
+      token: JwtService.sign(user)
     }
   }
 }

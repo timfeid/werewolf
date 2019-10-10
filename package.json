@@ -6,7 +6,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "dev": "concurrently --kill-others --success first \"npm start --prefix ./packages/server\" \"npm run serve --prefix ./packages/ui\" \"npm run start --prefix ./packages/socket\"",
-    "test": "npm run test:common && npm run test:server && npm run test:ui",
+    "test": "lerna run test",
     "test:common": "npm test --prefix ./packages/common",
     "test:server": "npm test --prefix ./packages/server",
     "test:ui": "npm test --prefix ./packages/ui",
