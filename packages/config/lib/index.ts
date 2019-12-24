@@ -8,8 +8,8 @@ dotenv.config({
 })
 
 export interface Config {
-  database: ConnectionOptions,
-  crypt: CryptConfig,
+  database: ConnectionOptions;
+  crypt: CryptConfig;
 }
 
 export const config: Config = {

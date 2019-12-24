@@ -1,4 +1,4 @@
-import { SignOptions } from "jsonwebtoken";
+import { SignOptions } from 'jsonwebtoken';
 
 export interface CryptConfig {
   bcryptRounds: number;

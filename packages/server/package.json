@@ -13,9 +13,11 @@
     "@salem/config": "^0.1.9",
     "@salem/data": "^0.1.9",
     "@salem/factories": "^0.1.9",
+    "@salem/lobby": "^0.1.9",
     "@salem/services": "^0.1.9",
     "@salem/ui": "^0.1.9",
-    "bcrypt": "^3.0.6",
+    "@salem/users": "^0.1.9",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
@@ -32,7 +34,6 @@
     "typescript": "^3.6.3"
   },
   "devDependencies": {
-    "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.2.3",
     "@types/dotenv": "^6.1.1",
     "@types/faker": "^4.1.6",

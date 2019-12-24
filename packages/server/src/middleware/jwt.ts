@@ -1,9 +1,15 @@
-import { config } from '@salem/config'
-import koaJwt from 'koa-jwt'
+import { User } from '@salem/data'
+import { JwtService } from '@salem/services'
+import koa from 'koa'
 
-const jwtMiddleware = koaJwt({
-  secret: config.crypt.jwtPublicKey
-})
+export function jwtMiddleware(): koa.Middleware {
+  return async (ctx, next) => {
+    ctx.jwt = JwtService.decode(
+      JwtService.extractTokenFromHeader(ctx.headers.authorization)
+    ) || {}
 
-export { jwtMiddleware }
+    ctx.user = ctx.jwt.id ? User.create(ctx.jwt) : undefined
 
+    await next()
+  }
+}

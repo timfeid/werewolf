@@ -11,14 +11,20 @@ describe('user controller', () => {
     await user.save()
   })
 
-  it('can get /user', async () => {
-    const response = await request('get', '/user', {
-      token: JwtService.sign(user)
+  it('not logged in /users', async () => {
+    const response = await request('get', '/users')
+
+    expect(response.status).to.eq(403)
+  })
+
+  it('can get /users', async () => {
+    const response = await request('get', '/users', {
+      token: JwtService.sign(user),
     })
 
     expect(response.status).to.eq(200)
-    expect(response.body).to.have.property('email').eq(user.email)
-    expect(response.body).to.have.property('id').eq(user.id)
-    expect(response.body).to.not.have.property('password')
+    expect(response.body.data).to.have.property('email').eq(user.email)
+    expect(response.body.data).to.have.property('id').eq(user.id)
+    expect(response.body.data).to.not.have.property('password')
   })
 })

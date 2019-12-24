@@ -15,8 +15,8 @@ const value = validate(joi.object({
 }).unknown().required())
 
 interface DatabaseDrivers {
-  postgres: PostgresConnectionOptions,
-  sqlite: SqliteConnectionOptions,
+  postgres: PostgresConnectionOptions;
+  sqlite: SqliteConnectionOptions;
 }
 
 const drivers: DatabaseDrivers = {

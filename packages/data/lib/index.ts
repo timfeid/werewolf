@@ -1,7 +1,7 @@
-import { config } from '@salem/config';
-import { resolve } from 'path';
-import { createConnection as cc } from 'typeorm';
-import { User } from './entities/user.entity';
+import { config } from '@salem/config'
+import { resolve } from 'path'
+import { createConnection as cc } from 'typeorm'
+import { User } from './entities/user.entity'
 
 function createConnection() {
   return cc({
@@ -14,5 +14,5 @@ function createConnection() {
   })
 }
 
-export { User, createConnection };
+export { User, createConnection }
 

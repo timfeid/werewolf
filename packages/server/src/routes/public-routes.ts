@@ -4,6 +4,7 @@ import { AuthenticationController } from '../components/authentication/authentic
 const publicRouter = new Router()
 
 publicRouter.post('/login', AuthenticationController.login)
+publicRouter.post('/register', AuthenticationController.register)
 
 export { publicRouter }
 

@@ -1,6 +1,6 @@
 import { User } from '@salem/data'
 import { UserFactory } from '@salem/factories'
-import { hash } from 'bcrypt'
+import { hash } from 'bcryptjs'
 import { expect } from 'chai'
 import faker from 'faker'
 import { JwtService } from '../../../../services/lib'
@@ -46,6 +46,25 @@ describe('authentication controller', () => {
       }
     })
     expect(response.status).to.eq(200)
-    expect(JwtService.check(response.body.token)).to.eq(true)
+    expect(JwtService.check(response.body.data.token)).to.eq(true)
+  })
+
+  it('can create user', async () => {
+    const user = UserFactory.build()
+    const pw = faker.lorem.word()
+    const response = await request('post', '/register', {
+      data: {
+        email: user.email,
+        password: pw,
+        confirmPassword: pw,
+        name: user.name,
+      }
+    })
+    expect(response.status).to.eq(200)
+    const r = expect(response.body.data)
+
+    r.to.have.property('email').eq(user.email)
+    r.to.have.property('id').not.null
+    expect(await User.find(response.body.data.id)).to.not.be.null
   })
 })
