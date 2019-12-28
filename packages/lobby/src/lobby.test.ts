@@ -1,6 +1,7 @@
-import { createConnection } from '@salem/data'
-import { UserFactory } from '@salem/factories'
+import { createConnection } from '@werewolf/data'
+import { UserFactory } from '@werewolf/factories'
 import { expect } from 'chai'
+import { MinionCard } from '../../werewolf/src/cards/minion'
 import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { Lobby } from './lobby'
@@ -18,7 +19,8 @@ describe('lobby', () => {
 
   it('can create a lobby', async () => {
     const user = await UserFactory.create()
-    const lobby = new Lobby(user)
+    const lobby = new Lobby('random')
+    lobby.addUser(user, true)
 
     expect(lobby.owner.user).to.have.property('id').eq(user.id)
   })
@@ -26,33 +28,35 @@ describe('lobby', () => {
   it('can start with valid cards + players', async () => {
     const owner = await UserFactory.create()
     const users = await UserFactory.createList(2)
-    const lobby = new Lobby(owner)
+    const lobby = new Lobby('random')
+    lobby.addUser(owner, true)
 
     users.forEach(lobby.addUser.bind(lobby))
 
-    lobby.setDeck([
+    lobby.setCards([
       WerewolfCard.name,
       WerewolfCard.name,
-      VillagerCard.name,
+      MinionCard.name,
       VillagerCard.name,
       VillagerCard.name,
       VillagerCard.name,
     ])
 
-    expect(lobby.isStartable).to.eq(true)
+    expect(lobby.isValid).to.eq(true)
   })
 
   it('starts the game correctly', async () => {
     const owner = await UserFactory.create()
     const users = await UserFactory.createList(2)
-    lobby = new Lobby(owner)
+    lobby = new Lobby('random')
+    lobby.addUser(owner, true)
 
     users.forEach(lobby.addUser.bind(lobby))
 
-    lobby.setDeck([
+    lobby.setCards([
       WerewolfCard.name,
       WerewolfCard.name,
-      VillagerCard.name,
+      MinionCard.name,
       VillagerCard.name,
       VillagerCard.name,
       VillagerCard.name,

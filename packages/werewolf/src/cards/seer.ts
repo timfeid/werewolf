@@ -8,9 +8,4 @@ export class SeerCard extends Card {
   get description() {
     return 'Seer'
   }
-
-  get isWerewolf () {
-    return false
-  }
-
 }

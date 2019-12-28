@@ -8,8 +8,4 @@ export class RobberCard extends Card {
   get description() {
     return 'Robber'
   }
-
-  get isWerewolf() {
-    return false
-  }
 }

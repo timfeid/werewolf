@@ -1,14 +1,23 @@
-import { User } from '@salem/data'
-import { UserFactory } from '@salem/factories'
-import { JwtService } from '@salem/services'
-import { app as socketApp, Socket } from '@salem/socket'
-import { expect } from 'chai'
+import { User } from '@werewolf/data'
+import { UserFactory } from '@werewolf/factories'
+import { JwtService } from '@werewolf/services'
+import { app as socketApp } from '@werewolf/socket'
+import chai, { expect } from 'chai'
+import subset from 'chai-subset'
 import http from 'http'
 import { AddressInfo } from 'net'
-import redis from 'redis-mock'
+import redis from 'redis'
 import io from 'socket.io-client'
+import { Lobbies } from '../../../../lobby/src'
+import { MinionCard } from '../../../../werewolf/src/cards/minion'
+import { RobberCard } from '../../../../werewolf/src/cards/robber'
+import { TroublemakerCard } from '../../../../werewolf/src/cards/troublemaker'
+import { VillagerCard } from '../../../../werewolf/src/cards/villager'
+import { WerewolfCard } from '../../../../werewolf/src/cards/werewolf'
 import { app } from '../../app'
 import { request } from '../../test/helpers'
+
+chai.use(subset)
 
 describe('lobby controller', () => {
   let lobbyId: string
@@ -19,15 +28,14 @@ describe('lobby controller', () => {
   let token: string
 
   before(async () => {
-    const redisClient = redis.createClient()
+    const pubClient = redis.createClient()
+    const subClient = redis.createClient()
     httpServer = http.createServer().listen()
     httpServerAddr = httpServer.address() as AddressInfo
-    socketApp.attach(httpServer, redisClient)
+    socketApp.attach(httpServer, pubClient, subClient)
 
-    const s = new Socket()
-    s.attach(httpServer, redisClient)
-
-    app.emit('setPresence', s)
+    app.emit('setPubClient', pubClient)
+    app.emit('setSubClient', subClient)
 
     owner = await UserFactory.create()
     token = await JwtService.sign(owner)
@@ -58,7 +66,8 @@ describe('lobby controller', () => {
   it('creates lobbies', async () => {
 
     await new Promise(async resolve => {
-      socket.once('lobby.users', () => {
+      socket.once('lobby.refresh', async ({lobby: {users}}: any) => {
+        expect(users.map((r: any) => r.id)).to.eql([owner.id])
         resolve()
       })
       const response = await request('post', '/lobbies', {
@@ -68,7 +77,7 @@ describe('lobby controller', () => {
       expect(response.status).to.eq(200)
       expect(response.body.data).to.have.property('id')
       expect(response.body.data).to.have.property('users')
-      expect(response.body.data).to.have.property('deck')
+      expect(response.body.data).to.have.property('cards')
 
       lobbyId = response.body.data.id
     })
@@ -85,18 +94,18 @@ describe('lobby controller', () => {
     expect(response.status).to.eq(200)
     expect(response.body.data).to.have.property('id')
     expect(response.body.data).to.have.property('users')
-    expect(response.body.data).to.have.property('deck')
+    expect(response.body.data).to.have.property('cards')
   })
 
   it('joins lobbies', async () => {
     const user = await UserFactory.create()
 
     await new Promise(async resolve => {
-      socket.once('lobby.users', async ({ users }: any) => {
+      socket.once('lobby.refresh', async ({ lobby: { users } }: any) => {
         expect(users.map((r: any) => r.id)).to.eql([owner.id, user.id])
 
         await request('post', `/lobbies/${lobbyId}/join`, {
-          user
+          user: await UserFactory.create()
         })
         resolve()
       })
@@ -107,21 +116,54 @@ describe('lobby controller', () => {
       expect(response.status).to.eq(200)
       expect(response.body.data).to.have.property('id')
       expect(response.body.data).to.have.property('users')
-      expect(response.body.data).to.have.property('deck')
+      expect(response.body.data).to.have.property('cards')
 
     })
   })
 
+  it('owner can change cards', async () => {
+
+    await new Promise(async resolve => {
+      socket.once('lobby.refresh', ({ card }: any) => {
+        resolve()
+      })
+      const response = await request('put', `/lobbies/${lobbyId}/cards`, {
+        token,
+        data: {
+          cards: [
+            WerewolfCard.name,
+            WerewolfCard.name,
+            MinionCard.name,
+            VillagerCard.name,
+            RobberCard.name,
+            TroublemakerCard.name,
+          ],
+        }
+      })
+      expect(response.status).to.eq(200)
+      expect(response.body.data).to.have.property('success').eq(true)
+      const c = Lobbies.get(lobbyId).cards
+      expect(c[0].constructor.name).to.eq(WerewolfCard.name)
+      expect(c[1].constructor.name).to.eq(WerewolfCard.name)
+      expect(c[2].constructor.name).to.eq(MinionCard.name)
+      expect(c[3].constructor.name).to.eq(VillagerCard.name)
+      expect(c[4].constructor.name).to.eq(RobberCard.name)
+      expect(c[5].constructor.name).to.eq(TroublemakerCard.name)
+    })
+  })
+
+  let myCard: any
   it('owner can deal', async () => {
 
     await new Promise(async resolve => {
-      socket.once('lobby.start', ({card}: any) => {
+      socket.once('lobby.card', ({card}: any) => {
+        myCard = card
         expect(card).to.have.property('description')
         expect(card).to.have.property('name')
         expect(card).to.have.property('id')
         resolve()
       })
-      const response = await request('post', `/lobbies/${lobbyId}/start`, {
+      const response = await request('post', `/lobbies/${lobbyId}/deal`, {
         token,
       })
       expect(response.status).to.eq(200)
@@ -130,4 +172,38 @@ describe('lobby controller', () => {
     })
   })
 
+
+  it('player can get card after dealt', async () => {
+    const response = await request('get', `/lobbies/${lobbyId}/card`, {
+      token,
+    })
+    expect(response.status).to.eq(200)
+    expect(response.body.data).to.containSubset(myCard)
+
+  })
+
+  it('owner can start', async () => {
+    await new Promise(async resolve => {
+      const lobby = Lobbies.get(lobbyId)
+      let started = 0
+      let ended = 0
+      lobby.on('turn.start', () => {
+        started++
+      })
+      lobby.on('turn.end', () => {
+        ended++
+      })
+      lobby.on('jury', () => {
+        expect(started - ended).to.eq(0)
+        expect(started).to.eq(5)
+        resolve()
+      })
+      const response = await request('post', `/lobbies/${lobbyId}/start`, {
+        token,
+      })
+      expect(response.status).to.eq(200)
+      expect(response.body.data).to.have.property('success').eq(true)
+    })
+
+  })
 })

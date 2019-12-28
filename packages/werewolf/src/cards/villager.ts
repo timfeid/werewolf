@@ -9,7 +9,7 @@ export class VillagerCard extends Card {
     return 'Villager'
   }
 
-  get isWerewolf () {
-    return false
+  get turnLength() {
+    return 0
   }
 }

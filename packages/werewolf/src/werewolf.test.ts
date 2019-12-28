@@ -7,7 +7,7 @@ import { NotEnoughPlayers, NoWerewolves, TooMany, Werewolf, WrongCardCount } fro
 
 describe('werewolf deck validation', () => {
   it('has a valid deck', () => {
-    const validation = Werewolf.isValidDeck([
+    const validation = Werewolf.hasValidCards([
       new WerewolfCard(),
       new SeerCard(),
       new MasonCard(),
@@ -20,7 +20,7 @@ describe('werewolf deck validation', () => {
   })
 
   it('card count needs to be player count + 3', () => {
-    const validation = Werewolf.isValidDeck([
+    const validation = Werewolf.hasValidCards([
       new WerewolfCard(),
       new SeerCard(),
       new SeerCard(),
@@ -33,7 +33,7 @@ describe('werewolf deck validation', () => {
   })
 
   it('minimum of 3 players', () => {
-    const validation = Werewolf.isValidDeck([
+    const validation = Werewolf.hasValidCards([
       new WerewolfCard(),
       new SeerCard(),
       new SeerCard(),
@@ -46,7 +46,7 @@ describe('werewolf deck validation', () => {
   })
 
   it('has too many seer cards', () => {
-    const validation = Werewolf.isValidDeck([
+    const validation = Werewolf.hasValidCards([
       new WerewolfCard(),
       new SeerCard(),
       new SeerCard(),
@@ -60,7 +60,7 @@ describe('werewolf deck validation', () => {
   })
 
   it('has no werewolf', () => {
-    const validation = Werewolf.isValidDeck([
+    const validation = Werewolf.hasValidCards([
       new MasonCard(),
       new VillagerCard(),
       new VillagerCard(),

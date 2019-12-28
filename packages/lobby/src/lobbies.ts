@@ -1,6 +1,7 @@
-import { User } from '@salem/data'
-import { Socket } from '@salem/socket'
+import { User } from '@werewolf/data'
+import { RedisClient } from 'redis'
 import { Lobby } from '.'
+import { connect } from './socket-connector'
 
 const lobbies: Record<string, Lobby> = {}
 
@@ -19,10 +20,12 @@ export function get(id: string) {
   return lobbies[id]
 }
 
-export function create(user: User, presence: Socket) {
+export function create(user: User, pubClient: RedisClient, subClient: RedisClient) {
   const lobbyId = makeid()
-
-  lobbies[lobbyId] = new Lobby(user, lobbyId, presence)
+  const lobby = new Lobby(lobbyId)
+  connect(lobby, pubClient, subClient)
+  lobbies[lobbyId] = lobby
+  lobby.addUser(user, true)
 
   return lobbies[lobbyId]
 }

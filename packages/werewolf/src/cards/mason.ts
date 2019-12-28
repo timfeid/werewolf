@@ -1,3 +1,4 @@
+import { Lobby } from '@werewolf/lobby'
 import { Card } from './card'
 
 export class MasonCard extends Card {
@@ -9,7 +10,13 @@ export class MasonCard extends Card {
     return 'Mason'
   }
 
-  get isWerewolf () {
-    return false
+  get turnLength () {
+    return 3
+  }
+
+  data(lobby: Lobby) {
+    return {
+      masons: lobby.findPlayersWithOriginalCard(MasonCard.name).map(u => u.toObject())
+    }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@salem/factories",
+  "name": "@werewolf/factories",
   "version": "0.1.9",
   "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
   "keywords": [],
@@ -21,10 +21,9 @@
     "url": "git@git.timfeid.com:timfeid/salem.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@salem/data": "^0.1.9",
-    "@salem/services": "^0.1.9"
+    "@werewolf/data": "^0.1.9",
+    "@werewolf/services": "^0.1.9"
   }
 }

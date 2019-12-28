@@ -20,21 +20,22 @@ export class Socket {
     return this._presence
   }
 
-  public attach(server: Server, redisClient: RedisClient) {
+  public attach(server: Server, pubClient: RedisClient, subClient: RedisClient) {
+    // eslint-disable-next-line
+    // @ts-ignore
     this._io = socket(server, {
-      // eslint-disable-next-line
-      // @ts-ignore this is a real thing tho..
       handlePreflightRequest: cors(),
-      adapter: redisAdapter({
-        pubClient: redisClient,
-        subClient: redisClient,
-      }),
     })
+
+    this.io.adapter(redisAdapter({
+      pubClient,
+      subClient,
+    }))
 
     this.io.use(authorize())
     this.io.use(addEvents())
 
-    this._presence = new Presence(redisClient)
+    this._presence = new Presence(pubClient)
   }
 
   public async findByUserId(userId: number): Promise<socket.Socket> {

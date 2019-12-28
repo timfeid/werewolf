@@ -1,6 +1,6 @@
-import { User } from '@salem/data'
-import { UserFactory } from '@salem/factories'
-import { JwtService } from '@salem/services'
+import { User } from '@werewolf/data'
+import { UserFactory } from '@werewolf/factories'
+import { JwtService } from '@werewolf/services'
 import { expect } from 'chai'
 import { request } from '../../test/helpers'
 
@@ -23,7 +23,6 @@ describe('user controller', () => {
     })
 
     expect(response.status).to.eq(200)
-    expect(response.body.data).to.have.property('email').eq(user.email)
     expect(response.body.data).to.have.property('id').eq(user.id)
     expect(response.body.data).to.not.have.property('password')
   })

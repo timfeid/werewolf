@@ -2,6 +2,6 @@
 
 const schema = require('..');
 
-describe('@salem/data', () => {
+describe('@werewolf/data', () => {
     it('needs tests');
 });

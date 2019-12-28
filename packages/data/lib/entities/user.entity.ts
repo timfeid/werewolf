@@ -3,15 +3,15 @@ import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeo
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number
+  id!: number
 
   @Column()
   @Index()
-  email: string
+  email!: string
 
   @Column()
-  name: string
+  name!: string
 
   @Column()
-  password: string
+  password!: string
 }

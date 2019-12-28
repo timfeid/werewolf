@@ -9,7 +9,7 @@ export class DrunkCard extends Card {
     return 'Drunk'
   }
 
-  get isWerewolf () {
-    return false
+  get turnLength() {
+    return 8
   }
 }

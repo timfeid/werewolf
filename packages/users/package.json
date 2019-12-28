@@ -1,5 +1,5 @@
 {
-  "name": "@salem/users",
+  "name": "@werewolf/users",
   "version": "0.1.9",
   "main": "src/index.ts",
   "description": "test socket",
@@ -11,10 +11,10 @@
     "test": "echo 'TEST TODO SERVER'"
   },
   "dependencies": {
-    "@salem/config": "^0.1.9",
-    "@salem/data": "^0.1.9",
-    "@salem/factories": "^0.1.9",
-    "@salem/services": "^0.1.9",
+    "@werewolf/config": "^0.1.9",
+    "@werewolf/data": "^0.1.9",
+    "@werewolf/factories": "^0.1.9",
+    "@werewolf/services": "^0.1.9",
     "dotenv": "^8.1.0",
     "socket.io": "^2.3.0",
     "typescript": "^3.6.3"

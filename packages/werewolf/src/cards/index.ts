@@ -28,6 +28,7 @@ const cardConfiguration: CardConfiguration[] = [
   {
     card: MasonCard,
     mustBe: 2,
+    max: 2,
   },
   {
     card: SeerCard,
@@ -51,6 +52,7 @@ const cardConfiguration: CardConfiguration[] = [
   },
   {
     card: VillagerCard,
+    max: 3,
   },
 ]
 

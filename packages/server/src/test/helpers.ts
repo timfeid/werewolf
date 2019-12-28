@@ -1,5 +1,5 @@
-import { User } from '@salem/data'
-import { JwtService } from '@salem/services'
+import { User } from '@werewolf/data'
+import { JwtService } from '@werewolf/services'
 import supertest from 'supertest'
 import { app } from '../app'
 

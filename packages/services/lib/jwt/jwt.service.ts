@@ -1,14 +1,12 @@
-import { config } from '@salem/config'
-import { User } from '@salem/data'
+import { config } from '@werewolf/config'
 import jwt from 'jsonwebtoken'
 
 export function decode(token: string) {
   return jwt.decode(token)
 }
 
-export function sign (user: User) {
+export function sign (user: {name: string; id: string | number}) {
   return jwt.sign({
-    email: user.email,
     name: user.name,
     id: user.id
   }, config.crypt.jwtPrivateKey, config.crypt.jwtSignOptions)
@@ -27,7 +25,7 @@ export function check (token: string) {
 export async function getUser(token: string) {
   const details = check(token) ? jwt.decode(token) as any : false
   if (details !== false) {
-    return User.findOne(details.id)
+    return details
   }
 }
 

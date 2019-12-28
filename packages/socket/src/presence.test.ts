@@ -1,12 +1,12 @@
-import { createConnection, User } from '@salem/data'
-import { UserFactory } from '@salem/factories'
-import { JwtService } from '@salem/services'
+import { createConnection, User } from '@werewolf/data'
+import { UserFactory } from '@werewolf/factories'
+import { JwtService } from '@werewolf/services'
 import chai, { expect } from 'chai'
 import chaiSubset from 'chai-subset'
 import faker from 'faker'
 import http from 'http'
 import { AddressInfo } from 'net'
-import redis from 'redis-mock'
+import redis from 'redis'
 import io from 'socket.io-client'
 import { app } from '../src/app'
 
@@ -23,11 +23,12 @@ before(async () => {
   user = await UserFactory.create()
   token = await JwtService.sign(user)
 
-  const redisClient = redis.createClient()
+  const pubClient = redis.createClient()
+  const subClient = redis.createClient()
   httpServer = http.createServer()
   httpServerAddr = httpServer.listen().address() as AddressInfo
 
-  app.attach(httpServer, redisClient)
+  app.attach(httpServer, pubClient, subClient)
 })
 
 beforeEach(async () => {

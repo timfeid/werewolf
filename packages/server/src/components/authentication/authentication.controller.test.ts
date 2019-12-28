@@ -1,5 +1,5 @@
-import { User } from '@salem/data'
-import { UserFactory } from '@salem/factories'
+import { User } from '@werewolf/data'
+import { UserFactory } from '@werewolf/factories'
 import { hash } from 'bcryptjs'
 import { expect } from 'chai'
 import faker from 'faker'
@@ -66,5 +66,28 @@ describe('authentication controller', () => {
     r.to.have.property('email').eq(user.email)
     r.to.have.property('id').not.null
     expect(await User.find(response.body.data.id)).to.not.be.null
+  })
+
+  it('can create jwt from name', async () => {
+    const response = await request('post', '/jwt', {
+      data: {
+        name: user.name,
+      }
+    })
+    expect(response.status).to.eq(200)
+    expect(response.body.data).to.have.property('jwt').not.null
+  })
+
+  it('can create jwt from name but keep id', async () => {
+    const id = 'TESTARINO'
+    const response = await request('post', '/jwt', {
+      data: {
+        name: 'hello',
+        id,
+      }
+    })
+    expect(response.status).to.eq(200)
+    expect(response.body.data).to.have.property('jwt').not.null
+    expect((JwtService.decode(response.body.data.jwt) as any).id).to.eq(id)
   })
 })

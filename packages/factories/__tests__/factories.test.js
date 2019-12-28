@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const factories = require('..');
+const factories = require('..')
 
-describe('@salem/factories', () => {
-    it('needs tests');
-});
+describe('@werewolf/factories', () => {
+  it('needs tests')
+})

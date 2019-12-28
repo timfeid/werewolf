@@ -2,6 +2,6 @@
 
 const config = require('..');
 
-describe('@salem/config', () => {
+describe('@werewolf/config', () => {
     it('needs tests');
 });

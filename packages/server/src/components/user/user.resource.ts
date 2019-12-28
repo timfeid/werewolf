@@ -1,4 +1,4 @@
-import { User } from '@salem/data'
+import { User } from '@werewolf/data'
 import { Resource } from '../resource'
 
 export class UserResource extends Resource {

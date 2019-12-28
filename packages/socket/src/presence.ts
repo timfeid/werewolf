@@ -3,7 +3,7 @@ import { UserSocket } from './user-socket'
 
 export interface SocketPresence {
   socketId: string;
-  userId: number;
+  userId: string | number;
   when: number;
 }
 
@@ -29,7 +29,6 @@ export class Presence {
       }),
       function (err) {
         if (err) {
-
           throw err
         }
       }

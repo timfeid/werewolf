@@ -1,5 +1,5 @@
-import { User } from '@salem/data'
-import { encryptPassword } from '@salem/users'
+import { User } from '@werewolf/data'
+import { encryptPassword } from '@werewolf/users'
 import faker from 'faker'
 import { Factory } from 'typeorm-factory'
 

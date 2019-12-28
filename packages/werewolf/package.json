@@ -1,5 +1,5 @@
 {
-  "name": "@salem/werewolf",
+  "name": "@werewolf/werewolf",
   "version": "0.1.9",
   "main": "src/index.ts",
   "description": "test server",
@@ -11,12 +11,11 @@
     "test": "NODE_ENV=test ts-mocha 'src/**/*.test.ts' --exit"
   },
   "dependencies": {
-    "@salem/config": "^0.1.9",
-    "@salem/data": "^0.1.9",
-    "@salem/factories": "^0.1.9",
-    "@salem/services": "^0.1.9",
-    "@salem/ui": "^0.1.9",
-    "@salem/users": "^0.1.9",
+    "@werewolf/config": "^0.1.9",
+    "@werewolf/data": "^0.1.9",
+    "@werewolf/factories": "^0.1.9",
+    "@werewolf/services": "^0.1.9",
+    "@werewolf/users": "^0.1.9",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
     "joi": "^14.3.1",

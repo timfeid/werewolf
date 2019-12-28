@@ -1,5 +1,5 @@
-import { User } from '@salem/data'
-import { JwtService } from '@salem/services'
+import { User } from '@werewolf/data'
+import { JwtService } from '@werewolf/services'
 import koa from 'koa'
 
 export function jwtMiddleware(): koa.Middleware {
@@ -8,7 +8,7 @@ export function jwtMiddleware(): koa.Middleware {
       JwtService.extractTokenFromHeader(ctx.headers.authorization)
     ) || {}
 
-    ctx.user = ctx.jwt.id ? User.create(ctx.jwt) : undefined
+    ctx.user = User.create(ctx.jwt)
 
     await next()
   }

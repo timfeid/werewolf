@@ -9,7 +9,7 @@ export class InsomniacCard extends Card {
     return 'Insomniac'
   }
 
-  get isWerewolf () {
-    return false
+  get turnLength() {
+    return 3
   }
 }

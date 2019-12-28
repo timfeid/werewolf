@@ -1,11 +1,11 @@
-# `@salem/data`
+# `@werewolf/data`
 
 > TODO: description
 
 ## Usage
 
 ```
-const schema = require('@salem/data');
+const schema = require('@werewolf/data');
 
 // TODO: DEMONSTRATE API
 ```

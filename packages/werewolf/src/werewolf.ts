@@ -31,7 +31,7 @@ export class Werewolf {
 
   }
 
-  public static isValidDeck (cards: Card[], playerCount: number) {
+  public static hasValidCards (cards: Card[], playerCount: number) {
     const errors: WerewolfValidationError[] = []
     const hasWerewolves = cards.filter(card => card.isWerewolf).length > 0
 

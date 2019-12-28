@@ -1,5 +1,5 @@
-import { config } from '@salem/config'
-import { User } from '@salem/data'
+import { config } from '@werewolf/config'
+import { User } from '@werewolf/data'
 import { compare, hash } from 'bcryptjs'
 
 export interface ConfirmLoginRequest {

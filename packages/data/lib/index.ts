@@ -1,4 +1,4 @@
-import { config } from '@salem/config'
+import { config } from '@werewolf/config'
 import { resolve } from 'path'
 import { createConnection as cc } from 'typeorm'
 import { User } from './entities/user.entity'

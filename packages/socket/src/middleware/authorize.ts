@@ -1,5 +1,4 @@
-import { User } from '@salem/data'
-import { JwtService } from '@salem/services'
+import { JwtService } from '@werewolf/services'
 import { UserSocket } from '../user-socket'
 
 export default function () {
@@ -8,7 +7,7 @@ export default function () {
     try {
       const user = await JwtService.getUserFromHeader(header)
 
-      if (user instanceof User) {
+      if (user !== false && user.id !== undefined) {
         socket.user = user
         return next()
       }

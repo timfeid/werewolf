@@ -1,6 +1,5 @@
-import { User } from '@salem/data'
-import { Socket } from '@salem/socket'
-import { Card, cardConfiguration, Werewolf } from '@salem/werewolf'
+import { User } from '@werewolf/data'
+import { Card, cardConfiguration, Werewolf } from '@werewolf/werewolf'
 import { EventEmitter } from 'typeorm/platform/PlatformTools'
 import { MinionCard } from '../../werewolf/src/cards/minion'
 import { RobberCard } from '../../werewolf/src/cards/robber'
@@ -10,32 +9,70 @@ import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { LobbyUser } from './user'
 
-interface Message {
-  user?: LobbyUser;
-  except?: LobbyUser;
-  message: string;
-  attrs?: Record<string, any>;
-}
+
 
 export interface CardPosition {
   type: 'middle' | 'player';
   index: number;
 }
 
+const defaultColors = [
+  // pinks
+  '#FFC0CB',
+  '#FF69B4',
+  '#C71585',
+  // reds
+  '#FFA07A',
+  '#DC143C',
+  '#FF0000',
+  // greens
+  '#556B2F',
+  '#00FF00',
+  '#90EE90',
+  // orange
+  '#FFA500',
+  // yellow
+  '#FFFF00',
+  '#FFDAB9',
+  '#FFD700',
+  // blue
+  '#7FFFD4',
+  '#B0C4DE',
+  '#1E90FF',
+  '#0000FF',
+  '#000080',
+  // browns
+  '#800000',
+  '#8B4513',
+  '#D2B48C',
+  // random
+  '#E6E6FA',
+  '#800080',
+  '#FFFFFF',
+  '#C0C0C0',
+  '#808080',
+  '#000000',
+]
+
 export class Lobby extends EventEmitter {
   protected _users: LobbyUser[] = []
-  protected maxUsers = 10
   protected minUsers = 3
   protected deck: Card[] = []
+  protected _cards: Card[] = []
   protected _middle: Card[] = []
   protected _id: string
-  protected socket: Socket
+  protected dealt = false
+  protected _started = false
+  protected turn = 0
+  protected remainingColors = [...defaultColors]
+  protected timeLeft = 0
+  protected juryTimeLeft = 5
 
-  constructor (user: User, id: string, socket: Socket) {
+  constructor (id: string) {
     super()
-    this.socket = socket
     this._id = id
-    this.setDeck([
+    this.shuffleColors()
+    this.setCards([
       WerewolfCard.name,
       MinionCard.name,
       SeerCard.name,
@@ -43,34 +80,26 @@ export class Lobby extends EventEmitter {
       TroublemakerCard.name,
       VillagerCard.name,
     ])
-    this.addUser(user, true)
   }
 
   public addUser (user: User, isOwner = false) {
-    this._users.push(new LobbyUser(user, isOwner))
-
-    this.sendMessage({
-      message: 'lobby.users',
-      attrs: {
-        users: this.toObject().users
-      }
-    })
-  }
-
-  get isStartable () {
-    return this._users.length >= this.minUsers && this._users.length <= this.maxUsers && this.valid
+    if (!this._users.find(u => u.user.id === user.id)) {
+      const u = new LobbyUser(user, this.remainingColors.pop(), isOwner)
+      this._users.push(u)
+      this.emit('joined', u)
+    }
   }
 
   get id () {
     return this._id
   }
 
-  get valid () {
+  get isValid () {
     return this.validation.valid
   }
 
   get validation () {
-    return Werewolf.isValidDeck(this.deck, this._users.length)
+    return Werewolf.hasValidCards(this._cards, this._users.length)
   }
 
   get owner () {
@@ -85,17 +114,22 @@ export class Lobby extends EventEmitter {
     return this._users
   }
 
-  setDeck (cardList: string[]) {
-    this.deck = []
+  get cards () {
+    return this._cards
+  }
+
+  setCards (cardList: string[]) {
+    this._cards = []
     cardList.forEach(c => {
       cardConfiguration.forEach(card => {
         if (card.card.name === c) {
-          this.deck.push(new card.card)
+          // eslint-disable-next-line
+          // @ts-ignore
+          this._cards.push(new card.card)
         }
       })
     })
-
-    this.emit('deck.set')
+    this.emit('cards.set')
   }
 
   shuffle() {
@@ -105,26 +139,100 @@ export class Lobby extends EventEmitter {
     }
   }
 
-  deal () {
-    if (!this.isStartable) {
-      return
+  shuffleColors() {
+    for (let i = this.remainingColors.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.remainingColors[i], this.remainingColors[j]] = [this.remainingColors[j], this.remainingColors[i]]
     }
-    this.shuffle()
-    this._users.forEach(lu => {
-      lu.card = this.deck.pop()
-    })
-    this._middle = this.deck.slice(0)
-    this.emit('dealt')
+  }
 
-    this.users.forEach(user => {
-      this.sendMessage({
-        user,
-        message: 'lobby.start',
-        attrs: {
-          card: user.card.toObject(),
-        }
+  deal () {
+    if (this.isValid) {
+      this.deck = [...this._cards]
+      this.shuffle()
+      this._users.forEach(lu => {
+        lu.card = this.deck.pop()
       })
-    })
+      this._middle = this.deck.slice(0)
+      this.dealt = true
+      this.emit('dealt')
+    }
+
+    return {
+      success: this.isValid,
+      errors: this.validation.errors.map(e => e.message),
+    }
+  }
+
+  start () {
+    if (this.isValid && this.dealt) {
+      this._started = true
+      this.emit('start')
+      this.nextTurn()
+    }
+
+    return {
+      success: this.isValid && this.dealt
+    }
+  }
+
+  currentTurn () {
+    if (!this.turn) {
+      return null
+    }
+
+    return cardConfiguration[this.turn - 1].card
+  }
+
+  turnExistsFor (card: typeof Card) {
+    return this._cards.find(c => c.constructor.name === card.name)
+  }
+
+  startTurn(card: Card) {
+    this.timeLeft = card.turnLength + 1
+    this.emit('turn.start', {card, data: card.data(this)})
+  }
+
+  endTurn (card: Card) {
+    this.emit('turn.end', {card})
+    this.nextTurn()
+  }
+
+  turnTimer (card: Card) {
+    this.timeLeft--
+
+    if (this.timeLeft === 1) {
+      setTimeout(this.endTurn.bind(this, card), process.env.NODE_ENV === 'test' ? 1 : 1000)
+    } else if (this.timeLeft === 0) {
+      this.endTurn(card)
+    } else {
+      setTimeout(this.turnTimer.bind(this, card), process.env.NODE_ENV === 'test' ? 1 : 1000)
+    }
+
+    this.emit('turn.timer', {timeLeft: this.timeLeft})
+  }
+
+  nextTurn () {
+    if (this.turn++ < cardConfiguration.length) {
+      const c = this.turnExistsFor(cardConfiguration[this.turn - 1].card)
+      if (c) {
+        this.startTurn(c)
+        return this.turnTimer(c)
+      }
+      this.nextTurn()
+    } else {
+      this.juryPhase()
+    }
+  }
+
+  juryPhase () {
+    this.juryTimeLeft--
+    this.emit('jury', {timeLeft: this.juryTimeLeft})
+    if (this.juryTimeLeft > 0) {
+      setTimeout(this.juryPhase.bind(this), process.env.NODE_ENV === 'test' ? 1 : 1000)
+    } else {
+      this.emit('jury.end')
+    }
   }
 
   getPlayerCard(index: number): Card {
@@ -143,12 +251,39 @@ export class Lobby extends EventEmitter {
     return this.middle[index]
   }
 
-  getCard(position: CardPosition) {
+  convertToCardPosition(position: string): CardPosition {
+    return {
+      type: position[0] === 'M' ? 'middle' : 'player',
+      index: parseInt(position[1], 10) - 1,
+    }
+  }
+
+  getCard(position: CardPosition | string) {
+    if (typeof position === 'string') {
+      position = this.convertToCardPosition(position)
+    }
+
     if (position.type === 'player') {
       return this.users[position.index].card
     }
 
     return this.middle[position.index]
+  }
+
+  getOriginalCardForUserId(userId: string | number) {
+    for (const u of this._users) {
+      if (u.user.id === userId) {
+        return u.originalCard.toObject()
+      }
+    }
+  }
+
+  getCardForUserId(userId: string | number) {
+    for (const u of this._users) {
+      if (u.user.id === userId) {
+        return u.card.toObject()
+      }
+    }
   }
 
   swapCards(swapIndex: CardPosition, withIndex: CardPosition) {
@@ -174,42 +309,21 @@ export class Lobby extends EventEmitter {
     return this._users.filter(u => u.card.constructor.name === cardId)
   }
 
+  findPlayersWithOriginalCard(cardId: string) {
+    return this._users.filter(u => u.originalCard.constructor.name === cardId)
+  }
+
   toObject () {
     return {
       id: this._id,
       users: this.users.map(u => {
-        return {
-          name: u.user.name,
-          id: u.user.id,
-          owner: u.isOwner,
-        }
+        return u.toObject()
       }),
-      deck: this.deck.map(c => {
-        return {
-          name: c.name,
-          description: c.description,
-          isWerewolf: c.isWerewolf,
-        }
+      started: this._started,
+      dealt: this.dealt,
+      cards: this._cards.map(c => {
+        return c.toObject()
       }),
-    }
-  }
-
-  sendMessage (message: Message) {
-    let users: LobbyUser[] = []
-    if (message.user) {
-      users = [message.user]
-    } else if (message.except) {
-      users = this.users.filter(u => u.user.id !== message.except.user.id)
-    } else {
-      users = this.users
-    }
-    users.forEach(u => this.sendTo(u.user, message.message, message.attrs))
-  }
-
-  async sendTo(user: User, msg: string, attrs: Record<string, any>) {
-    const presence = await this.socket.presence.getSocketIdByUserId(user.id)
-    if (presence) {
-      this.socket.io.to(presence.socketId).emit(msg, attrs)
     }
   }
 }
