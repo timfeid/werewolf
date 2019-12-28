@@ -38,7 +38,7 @@ export class Socket {
     this._presence = new Presence(pubClient)
   }
 
-  public async findByUserId(userId: number): Promise<socket.Socket> {
+  public async findByUserId(userId: string): Promise<socket.Socket> {
     const sock = await this._presence.getSocketIdByUserId(userId)
     if (sock) {
       return this.io.sockets.sockets[sock.socketId]

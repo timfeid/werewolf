@@ -29,7 +29,5 @@
     "eslint": "^6.5.1"
   },
   "dependencies": {
-    "@werewolf/data": "^0.1.9",
-    "@werewolf/factories": "^0.1.9"
   }
 }

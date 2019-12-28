@@ -1,5 +1,3 @@
-import { createConnection } from '@werewolf/data'
-import { UserFactory } from '@werewolf/factories'
 import { expect } from 'chai'
 import { MinionCard } from '../../werewolf/src/cards/minion'
 import { VillagerCard } from '../../werewolf/src/cards/villager'
@@ -13,12 +11,9 @@ function random(max: number) {
 
 describe('lobby', () => {
   let lobby: Lobby
-  before (async () => {
-    await createConnection()
-  })
 
   it('can create a lobby', async () => {
-    const user = await UserFactory.create()
+    const user = {id: 'asdf', name: 'wat'}
     const lobby = new Lobby('random')
     lobby.addUser(user, true)
 
@@ -26,8 +21,8 @@ describe('lobby', () => {
   })
 
   it('can start with valid cards + players', async () => {
-    const owner = await UserFactory.create()
-    const users = await UserFactory.createList(2)
+    const owner = {id: 'laskdmsjndbf', name: 'owner'}
+    const users = [{ id: 'sdaf', name: 'user1' }, { id: 'sdax', name: 'user2' }]
     const lobby = new Lobby('random')
     lobby.addUser(owner, true)
 
@@ -46,8 +41,8 @@ describe('lobby', () => {
   })
 
   it('starts the game correctly', async () => {
-    const owner = await UserFactory.create()
-    const users = await UserFactory.createList(2)
+    const owner = { id: 'laskdmsjndbf', name: 'owner' }
+    const users = [{ id: 'sdaf', name: 'user1' }, { id: 'sdax', name: 'user2' }]
     lobby = new Lobby('random')
     lobby.addUser(owner, true)
 

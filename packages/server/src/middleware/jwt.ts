@@ -1,4 +1,3 @@
-import { User } from '@werewolf/data'
 import { JwtService } from '@werewolf/services'
 import koa from 'koa'
 
@@ -8,7 +7,7 @@ export function jwtMiddleware(): koa.Middleware {
       JwtService.extractTokenFromHeader(ctx.headers.authorization)
     ) || {}
 
-    ctx.user = User.create(ctx.jwt)
+    ctx.user = ctx.jwt
 
     await next()
   }

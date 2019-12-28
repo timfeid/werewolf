@@ -110,7 +110,7 @@ export class Presence {
     }
   }
 
-  public async getSocketIdByUserId(userId: number): Promise<SocketPresence> {
+  public async getSocketIdByUserId(userId: string): Promise<SocketPresence> {
     const clients = (await this.list())
     return clients.find(socket => {
       return socket.userId === userId

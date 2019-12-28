@@ -1,5 +1,5 @@
-import { User } from '@werewolf/data'
 import { Socket } from '@werewolf/socket'
+import { User } from '@werewolf/werewolf'
 import { RedisClient } from 'redis'
 import emitter from 'socket.io-emitter'
 import { Lobby } from '..'
@@ -71,7 +71,6 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
 
 
   lobby.on('jury', ({timeLeft}) => {
-    console.log('jury', timeLeft)
     sendMessage({
       message: 'lobby.jury',
       attrs: {

@@ -24,8 +24,6 @@
     "test": "echo \"Error: todo\""
   },
   "dependencies": {
-    "@werewolf/data": "^0.1.9",
-    "@werewolf/factories": "^0.1.9",
     "@werewolf/services": "^0.1.9",
     "dotenv": "^8.1.0"
   },

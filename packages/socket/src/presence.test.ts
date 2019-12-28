@@ -1,6 +1,5 @@
-import { createConnection, User } from '@werewolf/data'
-import { UserFactory } from '@werewolf/factories'
 import { JwtService } from '@werewolf/services'
+import { User } from '@werewolf/werewolf'
 import chai, { expect } from 'chai'
 import chaiSubset from 'chai-subset'
 import faker from 'faker'
@@ -19,8 +18,7 @@ let user: User
 let token: string
 
 before(async () => {
-  await createConnection()
-  user = await UserFactory.create()
+  user = {id: 'kdmsf', name: 'asd'}
   token = await JwtService.sign(user)
 
   const pubClient = redis.createClient()

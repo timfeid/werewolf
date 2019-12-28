@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import path from 'path'
 import redis from 'redis'
-import { ConnectionOptions } from 'typeorm'
 import { CryptConfig } from './interfaces'
 
 dotenv.config({
@@ -9,13 +8,11 @@ dotenv.config({
 })
 
 export interface Config {
-  database: ConnectionOptions;
   crypt: CryptConfig;
   redis: redis.ClientOpts;
 }
 
 export const config: Config = {
-  database: require('./database.config').database,
   crypt: require('./crypt.config').crypt,
   redis: require('./redis.config').redis,
 }

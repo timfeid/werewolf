@@ -12,8 +12,6 @@
   },
   "dependencies": {
     "@werewolf/config": "^0.1.9",
-    "@werewolf/data": "^0.1.9",
-    "@werewolf/factories": "^0.1.9",
     "@werewolf/services": "^0.1.9",
     "@werewolf/socket": "^0.1.9",
     "@werewolf/users": "^0.1.9",

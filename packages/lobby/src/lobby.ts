@@ -1,5 +1,4 @@
-import { User } from '@werewolf/data'
-import { Card, cardConfiguration, Werewolf } from '@werewolf/werewolf'
+import { Card, cardConfiguration, User, Werewolf } from '@werewolf/werewolf'
 import { EventEmitter } from 'typeorm/platform/PlatformTools'
 import { MinionCard } from '../../werewolf/src/cards/minion'
 import { RobberCard } from '../../werewolf/src/cards/robber'

@@ -1,5 +1,4 @@
 import cors from '@koa/cors'
-import { createConnection } from '@werewolf/data'
 import { Socket } from '@werewolf/socket'
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
@@ -57,12 +56,7 @@ app.on('setSubClient', (client: redis.RedisClient) => {
   subClient = client
 })
 
-createConnection().then(() => {
-  app.emit('ready')
-}).catch(e => {
-  console.error(e)
-  process.exit(-1)
-})
+app.emit('ready')
 
 export { app }
 

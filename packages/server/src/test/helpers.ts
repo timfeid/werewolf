@@ -1,5 +1,5 @@
-import { User } from '@werewolf/data'
 import { JwtService } from '@werewolf/services'
+import { User } from '@werewolf/werewolf'
 import supertest from 'supertest'
 import { app } from '../app'
 

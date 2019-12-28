@@ -1,4 +1,3 @@
-import { User } from '@werewolf/data'
 import { RedisClient } from 'redis'
 import { Lobby } from '.'
 import { connect } from './socket-connector'

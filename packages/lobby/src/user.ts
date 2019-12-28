@@ -1,5 +1,4 @@
-import { User } from '@werewolf/data'
-import { Card } from '@werewolf/werewolf'
+import { Card, User } from '@werewolf/werewolf'
 
 export class LobbyUser {
   protected _user: User

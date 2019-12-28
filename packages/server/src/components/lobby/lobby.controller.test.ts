@@ -1,7 +1,6 @@
-import { User } from '@werewolf/data'
-import { UserFactory } from '@werewolf/factories'
 import { JwtService } from '@werewolf/services'
 import { app as socketApp } from '@werewolf/socket'
+import { User } from '@werewolf/werewolf'
 import chai, { expect } from 'chai'
 import subset from 'chai-subset'
 import http from 'http'
@@ -37,7 +36,7 @@ describe('lobby controller', () => {
     app.emit('setPubClient', pubClient)
     app.emit('setSubClient', subClient)
 
-    owner = await UserFactory.create()
+    owner = {name: 'bob', id: 'maksndj'}
     token = await JwtService.sign(owner)
 
 
@@ -86,7 +85,7 @@ describe('lobby controller', () => {
   })
 
   it('gets lobbies', async () => {
-    const user = await UserFactory.create()
+    const user = {name: 'bofxb', id: 'maksnsadj'}
     const response = await request('get', `/lobbies/${lobbyId}`, {
       user
     })
@@ -98,14 +97,14 @@ describe('lobby controller', () => {
   })
 
   it('joins lobbies', async () => {
-    const user = await UserFactory.create()
+    const user = {name: 'bsob', id: 'maksasndj'}
 
     await new Promise(async resolve => {
       socket.once('lobby.refresh', async ({ lobby: { users } }: any) => {
         expect(users.map((r: any) => r.id)).to.eql([owner.id, user.id])
 
         await request('post', `/lobbies/${lobbyId}/join`, {
-          user: await UserFactory.create()
+          user: {name: 'baob', id: 'madsksndj'}
         })
         resolve()
       })
