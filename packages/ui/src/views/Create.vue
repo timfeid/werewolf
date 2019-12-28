@@ -5,11 +5,11 @@
         <form @submit.stop.prevent="createLobby">
           <div class="form-group">
             <label for="name">
-              Name
+              Your name
             </label>
             <input required autocomplete="off" id="name" class="form-control" v-model="name" />
           </div>
-          <button type="submit" class="btn btn-outline-success w-100 d-block">Start a lobby</button>
+          <button type="submit" class="btn text-lowercase btn-outline-success w-100 d-block">Start a lobby</button>
         </form>
       </tab>
     </tabs>

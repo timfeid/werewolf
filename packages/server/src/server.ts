@@ -3,17 +3,15 @@ import { Socket } from '@werewolf/socket'
 import redis from 'redis'
 import { app } from './app'
 
-app.on('ready', () => {
-  const presence = new Socket()
-  const pubClient = redis.createClient(config.redis)
-  const subClient = redis.createClient(config.redis)
-  presence.attach(null, pubClient, subClient)
-  app.emit('setPubClient', pubClient)
-  app.emit('setSubClient', subClient)
-  app.emit('setPresence', presence)
-  app.listen(8082)
-  console.log('listening')
-})
+const presence = new Socket()
+const pubClient = redis.createClient(config.redis)
+const subClient = redis.createClient(config.redis)
+presence.attach(null, pubClient, subClient)
+app.emit('setPubClient', pubClient)
+app.emit('setSubClient', subClient)
+app.emit('setPresence', presence)
+app.listen(8082)
+console.log('listening')
 
 process.on('SIGTERM', function () {
   console.log('SIGTERM: Exiting ...')

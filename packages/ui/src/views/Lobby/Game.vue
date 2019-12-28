@@ -2,25 +2,32 @@
   <div>
     <div v-if="card" class="your-card">
       <card-image width="100%" :card="card" />
-      {{ card.name }}
+      <div>{{ card.name }}</div>
     </div>
 
-    <h1 class="text-center" v-if="currentTurn">
+    <h4 class="text-center" v-if="currentTurn">
       {{ currentTurn.name }} {{ turnTimer }} seconds
-    </h1>
+    </h4>
 
     <component v-if="currentTurn && myTurn" :is="currentTurn.name || 'Werewolf'" :data="data" :lobby="lobby" :card="currentTurn" @keeper-text="setKeeperText"  />
 
     <div v-if="juryTimer">Vote countdown {{ juryTimer }}</div>
-    <div v-if="!juryTimer && lobby.started && !currentTurn">
-      its over?
+    <div class="mt-4" v-if="finished">
+      <ul class="list-group">
+        <li class="list-group-item" v-for="obj in finalUserCards">
+          {{ obj.name }} was a {{ obj.card.name }}
+        </li>
+        <li class="list-group-item" v-for="(obj, index) in finalMiddleCards">
+          Middle {{index+1}} was a {{ obj.name }}
+        </li>
+      </ul>
     </div>
 
     <div class="keeper-text" :class="{ 'keeper-text--show': showKeeperText }" v-html="keeperText" @click="showKeeperText = !showKeeperText" />
 
-    <div v-if="owner">
-      <button v-if="!lobby.started" @click="start" class="btn btn-outline-success">
-        START
+    <div class="mt-3" v-if="owner">
+      <button v-if="!lobby.started" @click="start" class="btn w-100 text-lowercase btn-outline-secondary">
+        Start
       </button>
     </div>
   </div>
@@ -45,6 +52,7 @@ import Robber from './Turns/Robber.vue'
 import Troublemaker from './Turns/Troublemaker.vue'
 import Drunk from './Turns/Drunk.vue'
 import Insomniac from './Turns/Insomniac.vue'
+import { Player } from '../../components/Player.vue'
 
 @Component({
   components: {
@@ -82,6 +90,11 @@ class Game extends Vue {
   myTurn = false
 
   showKeeperText = false
+
+  finished = false
+
+  finalUserCards: any[] = []
+  finalMiddleCards: Card[] = []
 
   created () {
     events.$on('lobby.turn.start', ({card, lobby}: any) => {
@@ -131,6 +144,12 @@ class Game extends Vue {
         this.juryTimer = timeLeft
       }
     })
+
+    events.$on('lobby.end', ({lobby, users, middle}: {lobby: any;users: any;middle: any}) => {
+      this.finished = true
+      this.finalMiddleCards = middle
+      this.finalUserCards = users
+    })
   }
 
   async start () {
@@ -151,7 +170,9 @@ export default Game
   .your-card {
     margin: 0 auto;
     text-align: center;
-    width: 60px;
+    img {
+      width: 60px;
+    }
   }
   .keeper-text {
     user-select: none;

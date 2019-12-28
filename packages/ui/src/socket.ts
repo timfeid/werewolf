@@ -51,8 +51,13 @@ function setup (this: Vue, jwt: string) {
     events.$emit('lobby.turn.mine.end', a)
   })
 
-  socket.on('lobby.jury', (obj: {timeLeft: number; lobby: any}) => {
+  socket.on('lobby.jury', (obj: { timeLeft: number; lobby: any }) => {
     events.$emit('lobby.jury', obj)
+  })
+
+  socket.on('lobby.end', (obj: any) => {
+    console.log(obj)
+    events.$emit('lobby.end', obj)
   })
 
 }

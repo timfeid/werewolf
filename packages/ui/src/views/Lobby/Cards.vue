@@ -11,19 +11,15 @@
         </div>
       </template>
     </div>
-    <div class="mt-3">
+    <div class="my-3">
+      <div class="row">
+        <div class="col-6 font-weight-bold">
 
-      <div class="font-weight-bold">
-        Players for this setup:
-      </div>
-      <div>
-        {{ lobby.cards.length - 3 }}
-      </div>
-      <div class="font-weight-bold">
-        Total numbers of players in this lobby:
-      </div>
-      <div>
-        {{ lobby.users.length }}
+          Required: <span class="font-weight-normal">{{ lobby.cards.length - 3 }}</span>
+        </div>
+        <div class="col-6 font-weight-bold text-right">
+          Here:  <span class="font-weight-normal">{{ lobby.users.length }}</span>
+        </div>
       </div>
     </div>
   </div>

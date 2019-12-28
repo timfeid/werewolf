@@ -1,0 +1,3 @@
+FROM baseimg
+
+CMD ts-node /usr/src/app/packages/server/src/server.ts

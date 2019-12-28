@@ -1,3 +1,4 @@
+import { User } from '@werewolf/werewolf'
 import { RedisClient } from 'redis'
 import { Lobby } from '.'
 import { connect } from './socket-connector'

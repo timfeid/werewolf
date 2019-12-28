@@ -1,0 +1,7 @@
+*
+!packages
+!.env
+!package.json
+!yarn.lock
+!lerna.json
+*/**/node_modules

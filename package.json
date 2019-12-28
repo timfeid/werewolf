@@ -19,13 +19,20 @@
     "publish": "lerna publish"
   },
   "devDependencies": {
+    "@types/node": "12.12.22",
     "concurrently": "^3.6.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "lerna": "^3.16.5",
+    "prettier": "^1.19.1",
     "vuepress": "^0.10.1",
     "vuepress-theme-vue": "^1.1.0"
   },
   "engines": {
     "node": ">= 8"
   },
-  "name": "salem"
+  "name": "salem",
+  "dependencies": {
+    "@vue/eslint-config-prettier": "^6.0.0"
+  }
 }

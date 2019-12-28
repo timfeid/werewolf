@@ -1,3 +1,7 @@
 @import 'startup';
 
 @import 'bootstrap';
+
+* {
+  text-transform: lowercase;
+}

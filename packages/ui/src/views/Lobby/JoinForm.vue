@@ -2,18 +2,18 @@
   <form @submit.stop.prevent="joinLobby">
     <div class="form-group">
       <label for="name">
-        Join Code
+        Join code
       </label>
       <input required autocomplete="off" id="code" class="form-control" v-model="code" />
     </div>
     <div class="form-group">
       <label for="name">
-        Name
+        Your name
       </label>
       <input required autocomplete="off" id="name" class="form-control" v-model="name" />
     </div>
-    <button type="submit" class="btn btn-outline-success w-100 d-block">
-      Play!
+    <button type="submit" class="btn btn-outline-success w-100 d-block text-lowercase">
+      Join game
     </button>
   </form>
 </template>
@@ -28,10 +28,10 @@ import axios from '../../axios'
   }
 })
 class JoinForm extends Vue {
-  @Prop({required: false, type: String, default: false})
+  @Prop({required: false, type: String, default: ''})
   joinCode!: string
 
-  code!: string
+  code = ''
 
   created () {
     this.code = this.joinCode
@@ -45,7 +45,8 @@ class JoinForm extends Vue {
   }
 
   async joinLobby () {
-    const response = await axios.post(`/lobbies/${this.code}/join`)
+    const code = this.code.toUpperCase()
+    const response = await axios.post(`/lobbies/${code}/join`)
     if (response.status === 200) {
       this.$emit('joined', response.data.data)
     }

@@ -5,12 +5,12 @@
     <div class="d-flex flex-row flex-wrap" style="margin-left: -.5rem;">
       <player v-for="user in lobby.users" :key="user.id" :player="user" />
     </div>
-    <div v-if="owner">
-      <button @click="deal" class="btn btn-outline-success">
+    <div class="mt-3" v-if="owner">
+      <button @click="deal" class="w-100 btn btn-primary text-lowercase">
         Deal
       </button>
     </div>
-    <div v-if="!joined">
+    <div class="mt-3" v-if="!joined">
       <join-form :join-code="lobby.id" />
     </div>
   </div>

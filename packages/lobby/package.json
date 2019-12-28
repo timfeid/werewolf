@@ -14,7 +14,6 @@
     "@werewolf/config": "^0.1.9",
     "@werewolf/services": "^0.1.9",
     "@werewolf/socket": "^0.1.9",
-    "@werewolf/users": "^0.1.9",
     "@werewolf/werewolf": "^0.1.9",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",

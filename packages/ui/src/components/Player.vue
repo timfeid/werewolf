@@ -28,7 +28,7 @@ export default PlayerVue
 </script>
 
 <style lang="scss">
-  $box-size: 96px;
+  $box-size: 69px;
   .player {
     border-radius: $box-size / 2;
     height: $box-size;

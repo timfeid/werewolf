@@ -69,6 +69,22 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     sendRefresh()
   })
 
+  lobby.on('end', () => {
+    sendMessage({
+      message: 'lobby.end',
+      attrs: {
+        users: lobby.users.map(u => {
+          return {
+            card: u.card.toObject(),
+            ...u.toObject()
+          }
+        }),
+        middle: lobby.middle.map(u => u.toObject()),
+      }
+    })
+
+  })
+
 
   lobby.on('jury', ({timeLeft}) => {
     sendMessage({

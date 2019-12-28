@@ -230,7 +230,7 @@ export class Lobby extends EventEmitter {
     if (this.juryTimeLeft > 0) {
       setTimeout(this.juryPhase.bind(this), process.env.NODE_ENV === 'test' ? 1 : 1000)
     } else {
-      this.emit('jury.end')
+      this.emit('end')
     }
   }
 
