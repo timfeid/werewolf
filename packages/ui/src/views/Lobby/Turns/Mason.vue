@@ -17,6 +17,9 @@ import axios from '../../../axios'
   }
 })
 class MasonTurn extends TurnMixin {
+  mounted () {
+    this.watchData()
+  }
   @Watch('data', {deep: true})
   watchData () {
     if (!this.data.masons) {

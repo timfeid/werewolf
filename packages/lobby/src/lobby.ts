@@ -65,7 +65,7 @@ export class Lobby extends EventEmitter {
   protected turn = 0
   protected remainingColors = [...defaultColors]
   protected timeLeft = 0
-  protected juryTimeLeft = 5
+  protected juryTimeLeft = 300
 
   constructor (id: string) {
     super()
