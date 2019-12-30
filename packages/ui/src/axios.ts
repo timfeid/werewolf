@@ -3,7 +3,7 @@ import store from './store'
 
 
 const axios = a.create({
-  baseURL: process.env.VUE_APP_API_ENDPOINT || `${window.location.host}:8082`
+  baseURL: process.env.VUE_APP_API_ENDPOINT || `${window.location.protocol}://${window.location.host}:8082`
 })
 
 axios.interceptors.request.use((config) => {
