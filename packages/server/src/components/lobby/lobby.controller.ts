@@ -171,7 +171,12 @@ export class LobbyController {
 
         if (ctx.request.body.view) {
           ctx.body = {
-            data: lookups.map(lookup => lobby.getCard(lookup).toObject())
+            data: lookups.map(lookup => {
+              return {
+                ...lobby.getCard(lookup).toObject(),
+                position: lookup,
+              }
+            })
           }
         }
         break

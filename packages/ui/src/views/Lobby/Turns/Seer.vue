@@ -1,12 +1,18 @@
 <template>
   <div class="text-center mt-4">
-    <middle
-      v-if="selecting"
-      :allowed-selections="2"
-      @selected="selected"
-    />
-    <div v-if="selecting" class="d-flex flex-row justify-content-center">
-      <player v-for="player of playersBesideMe" :key="player.id" @click.native="selectedPlayer(player)" :player="player" />
+    <div v-if="selecting">
+
+      <div>
+        Select two of these
+      </div>
+      <middle
+        :allowed-selections="2"
+        @selected="selected"
+      />
+      <div>or one of</div>
+      <div class="d-flex flex-row justify-content-center">
+        <player v-for="player of playersBesideMe" :key="player.id" @click.native="selectedPlayer(player)" :player="player" />
+      </div>
     </div>
     <div v-if="cards">
       The cards you viewed were
@@ -56,7 +62,7 @@ class SeerTurn extends TurnMixin {
       const player = this.lobby.users[parseInt(cards[0][1], 10)-1]
       this.$emit('keeper-text', `${player.name}'s card was ` + response.data.data.map((card: Card) => card.name).join(', '))
     } else {
-      this.$emit('keeper-text', 'The cards you saw were ' + response.data.data.map((card: Card) => card.name).join(', '))
+      this.$emit('keeper-text', 'The cards you saw were ' + response.data.data.map((card: any) => `${card.position}: ${card.name}`).join(', '))
     }
   }
 }

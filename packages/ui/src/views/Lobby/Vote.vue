@@ -119,8 +119,9 @@ export default Vote
 
 <style lang="scss">
 .claim-card {
-  max-width: 20%;
+  max-width: 16%;
   cursor: pointer;
   margin-left: 3px;
+  margin-top: 3px;
 }
 </style>
