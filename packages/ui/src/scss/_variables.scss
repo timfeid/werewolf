@@ -5,6 +5,14 @@
 // Color system
 //
 
+
+$container-max-widths: (
+  sm: 540px,
+  md: 540px,
+  lg: 540px,
+  xl: 540px
+);
+
 $white:    #fff !default;
 $gray-100: #f8f9fa !default;
 $gray-200: #e9ecef !default;

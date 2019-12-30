@@ -14,7 +14,6 @@ export function sign (user: {name: string; id: string | number}) {
 
 export function check (token: string) {
   try {
-    console.log(config.crypt)
     jwt.verify(token, config.crypt.jwtPublicKey)
   } catch (e) {
     return false
@@ -24,7 +23,6 @@ export function check (token: string) {
 }
 
 export async function getUser(token: string) {
-  console.log(check(token), jwt.decode(token))
   const details = check(token) ? jwt.decode(token) as any : false
   if (details !== false) {
     return details

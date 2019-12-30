@@ -86,12 +86,50 @@ export class LobbyController {
     }
   }
 
+  public static async end(ctx: Context) {
+    ctx.assert(ctx.user, 403)
+    const lobby = Lobbies.get(ctx.params.id)
+    ctx.assert(lobby.owner.user.id === ctx.user.id, 401)
+
+    ctx.body = {
+      data: lobby.end()
+    }
+  }
+
   public static async getCard(ctx: Context) {
     ctx.assert(ctx.user, 403)
     const lobby = Lobbies.get(ctx.params.id)
 
     ctx.body = {
       data: lobby.getOriginalCardForUserId(ctx.user.id)
+    }
+  }
+
+  public static async claim(ctx: Context) {
+    ctx.assert(ctx.user, 403)
+    const lobby = Lobbies.get(ctx.params.id)
+    ctx.assert(ctx.request.body.id, 400)
+
+    const claim = lobby.setClaim(ctx.user.id, ctx.request.body.id)
+
+    ctx.body = {
+      data: {
+        success: claim !== false
+      }
+    }
+  }
+
+  public static async vote(ctx: Context) {
+    ctx.assert(ctx.user, 403)
+    const lobby = Lobbies.get(ctx.params.id)
+    ctx.assert(ctx.request.body.id, 400)
+
+    const claim = lobby.setVote(ctx.user.id, ctx.request.body.id)
+
+    ctx.body = {
+      data: {
+        success: claim !== false
+      }
     }
   }
 

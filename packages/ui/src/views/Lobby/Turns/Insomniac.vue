@@ -1,5 +1,11 @@
 <template>
-  <div />
+  <div>
+
+
+    <audio autoplay="true">
+      <source :src="require(`@/assets/sound/wake/InsomniacCard.mp3`)" type="audio/ogg">
+    </audio>
+  </div>
 </template>
 
 <script lang="ts">

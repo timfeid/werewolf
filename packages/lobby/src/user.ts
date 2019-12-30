@@ -2,9 +2,11 @@ import { Card, User } from '@werewolf/werewolf'
 
 export class LobbyUser {
   protected _user: User
+  protected _vote: User
   protected _isOwner: boolean
   protected _originalCard: Card
   protected _card: Card
+  protected _claim: Card
   protected _color: string
 
   constructor (user: User, color: string, isOwner = false) {
@@ -36,6 +38,22 @@ export class LobbyUser {
     }
   }
 
+  get claim(): Card {
+    return this._claim
+  }
+
+  set claim(claim: Card) {
+    this._claim = claim
+  }
+
+  get vote(): User {
+    return this._vote
+  }
+
+  set vote(vote: User) {
+    this._vote = vote
+  }
+
   get originalCard(): Card {
     return this._originalCard
   }
@@ -46,6 +64,8 @@ export class LobbyUser {
       id: this.user.id,
       owner: this.isOwner,
       color: this.color,
+      claim: this.claim ? this.claim.toObject() : null,
+      vote: this.vote,
     }
   }
 }

@@ -21,6 +21,7 @@ chai.use(subset)
 describe('lobby controller', () => {
   let lobbyId: string
   let owner: User
+  let user: User
   let socket: SocketIOClient.Socket
   let httpServer
   let httpServerAddr: AddressInfo
@@ -36,7 +37,8 @@ describe('lobby controller', () => {
     app.emit('setPubClient', pubClient)
     app.emit('setSubClient', subClient)
 
-    owner = {name: 'bob', id: 'maksndj'}
+    owner = { name: 'bob', id: 'maksndj' }
+    user = { name: 'bob2', id: 'makfsndj'}
     token = await JwtService.sign(owner)
 
 
@@ -53,13 +55,16 @@ describe('lobby controller', () => {
     })
 
     socket.on('error', console.log.bind(console))
-    socket.on('disconnect', () => console.log('???'))
 
 
     return await new Promise(done => {
       socket.on('connect', done)
     })
 
+  })
+
+  after(async () => {
+    socket.disconnect()
   })
 
   it('creates lobbies', async () => {
@@ -97,8 +102,6 @@ describe('lobby controller', () => {
   })
 
   it('joins lobbies', async () => {
-    const user = {name: 'bsob', id: 'maksasndj'}
-
     await new Promise(async resolve => {
       socket.once('lobby.refresh', async ({ lobby: { users } }: any) => {
         expect(users.map((r: any) => r.id)).to.eql([owner.id, user.id])
@@ -204,5 +207,52 @@ describe('lobby controller', () => {
       expect(response.body.data).to.have.property('success').eq(true)
     })
 
+  })
+
+  it('can claim a card', async () => {
+    const lobby = Lobbies.get(lobbyId)
+    const response = await request('post', `/lobbies/${lobbyId}/claim`, {
+      token,
+      data: {
+        id: WerewolfCard.name,
+      },
+    })
+    expect(response.status).to.eq(200)
+    const claim = lobby.users.find(u => u.user.id === owner.id).claim
+    expect(claim).not.eq(false)
+    expect(claim.toObject()).to.have.property('id').eq(WerewolfCard.name)
+  })
+
+  it('can vote for a player', async () => {
+    const lobby = Lobbies.get(lobbyId)
+    const response = await request('post', `/lobbies/${lobbyId}/vote`, {
+      token,
+      data: {
+        id: user.id,
+      },
+    })
+    expect(response.status).to.eq(200)
+    const vote = lobby.users.find(u => u.user.id === owner.id).vote
+    expect(vote).to.have.property('id').eq(user.id)
+  })
+
+  it('can vote for the middle', async () => {
+    const lobby = Lobbies.get(lobbyId)
+    const response = await request('post', `/lobbies/${lobbyId}/vote`, {
+      token,
+      data: {
+        id: 'middle',
+      },
+    })
+    expect(response.status).to.eq(200)
+    const vote = lobby.users.find(u => u.user.id === owner.id).vote
+    expect(vote).to.have.property('id').eq('middle')
+  })
+
+  it('owner can end', async () => {
+    const response = await request('post', `/lobbies/${lobbyId}/end`, {
+      token,
+    })
+    expect(response.status).to.eq(200)
   })
 })

@@ -18,6 +18,10 @@
         <player v-for="player of data.werewolves" :key="player.id" :player="player" />
       </div>
     </div>
+
+    <audio autoplay="true">
+      <source :src="require(`@/assets/sound/wake/WerewolfCard.mp3`)" type="audio/ogg">
+    </audio>
   </div>
 </template>
 
@@ -38,6 +42,7 @@ import axios from '../../../axios'
 class WerewolfTurn extends TurnMixin {
   selecting = true
   middleCard: Card | null = null
+
   async selected (card: string[]) {
     this.selecting = false
     const response = await axios.post(`/lobbies/${this.lobby.id}/turn`, {

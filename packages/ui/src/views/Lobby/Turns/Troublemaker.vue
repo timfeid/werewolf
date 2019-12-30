@@ -6,6 +6,10 @@
     <div v-if="swaper && swapee">
       You swapped {{ swaper.name }}'s card with {{ swapee.name }}'
     </div>
+
+    <audio autoplay="true">
+      <source :src="require(`@/assets/sound/wake/TroublemakerCard.mp3`)" type="audio/ogg">
+    </audio>
   </div>
 </template>
 

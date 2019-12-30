@@ -15,6 +15,11 @@
         {{ card.name }}
       </div>
     </div>
+
+
+    <audio autoplay="true">
+      <source :src="require(`@/assets/sound/wake/SeerCard.mp3`)" type="audio/ogg">
+    </audio>
   </div>
 </template>
 

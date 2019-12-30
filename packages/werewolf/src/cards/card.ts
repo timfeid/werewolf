@@ -13,7 +13,7 @@ export abstract class Card {
   }
 
   get turnLength(): number {
-    return 15
+    return 2
   }
 
   public toObject () {

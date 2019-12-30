@@ -56,7 +56,6 @@ function setup (this: Vue, jwt: string) {
   })
 
   socket.on('lobby.end', (obj: any) => {
-    console.log(obj)
     events.$emit('lobby.end', obj)
   })
 

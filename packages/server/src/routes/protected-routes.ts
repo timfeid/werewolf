@@ -11,6 +11,9 @@ protectedRouter.post('/lobbies/:id/start', LobbyController.start)
 protectedRouter.get('/lobbies/:id', LobbyController.get)
 protectedRouter.get('/lobbies/:id/card', LobbyController.getCard)
 protectedRouter.post('/lobbies/:id/turn', LobbyController.turn)
+protectedRouter.post('/lobbies/:id/claim', LobbyController.claim)
+protectedRouter.post('/lobbies/:id/vote', LobbyController.vote)
+protectedRouter.post('/lobbies/:id/end', LobbyController.end)
 
 export { protectedRouter }
 

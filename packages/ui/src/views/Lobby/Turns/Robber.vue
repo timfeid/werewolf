@@ -8,6 +8,11 @@
 
       {{ newCard.name }}
     </div>
+
+
+    <audio autoplay="true">
+      <source :src="require(`@/assets/sound/wake/RobberCard.mp3`)" type="audio/ogg">
+    </audio>
   </div>
 </template>
 

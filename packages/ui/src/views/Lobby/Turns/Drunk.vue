@@ -8,6 +8,12 @@
     <div v-else>
       You swapped your card!
     </div>
+
+
+
+    <audio autoplay="true">
+      <source :src="require(`@/assets/sound/wake/DrunkCard.mp3`)" type="audio/ogg">
+    </audio>
   </div>
 </template>
 

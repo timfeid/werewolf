@@ -69,6 +69,14 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     sendRefresh()
   })
 
+  lobby.on('user.claimed', () => {
+    sendRefresh()
+  })
+
+  lobby.on('user.voted', () => {
+    sendRefresh()
+  })
+
   lobby.on('end', () => {
     sendMessage({
       message: 'lobby.end',

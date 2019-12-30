@@ -312,6 +312,40 @@ export class Lobby extends EventEmitter {
     return this._users.filter(u => u.originalCard.constructor.name === cardId)
   }
 
+  end () {
+    this.juryTimeLeft = 1
+  }
+
+  setClaim(userId: string, cardId: string) {
+    const card = this.cards.find(c => c.constructor.name === cardId)
+    const user = this.users.find(u => u.user.id === userId)
+    if (!card || !user) {
+      console.log(cardId, this.cards, userId, this.users)
+      return false
+    }
+
+    user.claim = card
+
+    this.emit('user.claimed', user)
+
+    return user.claim
+  }
+
+  setVote(userId: string, voteUserId: string) {
+    const user = this.users.find(u => u.user.id === userId)
+    const vote = voteUserId === 'middle' ? {user: {id: 'middle', name: 'middle'}} : this.users.find(u => u.user.id === voteUserId)
+    if (!vote || !user) {
+      console.log(voteUserId, userId, this.users)
+      return false
+    }
+
+    user.vote = vote.user
+
+    this.emit('user.voted', user)
+
+    return user.vote
+  }
+
   toObject () {
     return {
       id: this._id,

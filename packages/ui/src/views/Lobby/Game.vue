@@ -3,6 +3,9 @@
     <div v-if="card" class="your-card">
       <card-image width="100%" :card="card" />
       <div>{{ card.name }}</div>
+      <audio autoplay="true">
+        <source :src="require(`@/assets/sound/rules/${card.id}.mp3`)" type="audio/ogg">
+      </audio>
     </div>
 
     <h4 class="text-center" v-if="currentTurn">
@@ -11,30 +14,55 @@
 
     <component v-if="currentTurn && myTurn" :is="currentTurn.name || 'Werewolf'" :data="data" :lobby="lobby" :card="currentTurn" @keeper-text="setKeeperText"  />
 
-    <div v-if="juryTimer">Vote countdown {{ juryTimer }}</div>
+    <vote v-if="juryTimer > 0" :jury-timer="juryTimer" :lobby="lobby" :owner="owner" />
+
     <div class="mt-4" v-if="finished">
+      <h4 class="text-center mb-0">The town voted to lynch {{ highestVotedPlayer.name }}!</h4>
+      <h1 class="text-center">{{ winner }} win!</h1>
       <ul class="list-group">
-        <li class="list-group-item" v-for="obj in finalUserCards">
-          {{ obj.name }} was a {{ obj.card.name }}
+        <li class="list-group-item d-flex" v-for="obj in finalUserCards" :class="{lynched: highestVotedPlayer.id === obj.id}">
+          <div>
+            {{ obj.name }} was a <span class="badge badge-secondary">{{ obj.card.name }}</span>
+          </div>
+          <div class="ml-auto">
+            <span class="badge badge-info">{{ votesFor(obj.id) }} votes</span>
+          </div>
         </li>
-        <li class="list-group-item" v-for="(obj, index) in finalMiddleCards">
-          Middle {{index+1}} was a {{ obj.name }}
+        <li class="list-group-item d-flex" v-for="(obj, index) in finalMiddleCards" :class="{lynched: highestVotedPlayer.id === 'middle'}">
+          <div>
+
+            Middle {{index+1}} was a <span class="badge badge-secondary">{{ obj.name }}</span>
+          </div>
+          <div class="ml-auto">
+            <span class="badge badge-info">{{ votesFor('middle') }} votes</span>
+          </div>
         </li>
       </ul>
     </div>
 
     <div class="keeper-text" :class="{ 'keeper-text--show': showKeeperText }" v-html="keeperText" @click="showKeeperText = !showKeeperText" />
+    <div class="keeper-text-helper" @click="showKeeperText = !showKeeperText" v-if="!showKeeperText">tap to show info</div>
 
     <div class="mt-3" v-if="owner">
       <button v-if="!lobby.started" @click="start" class="btn w-100 text-lowercase btn-outline-secondary">
         Start
       </button>
     </div>
+
+    <div class="audio-controls">
+      <audio ref="audio" :autoplay="audio ? true : false">
+        <source :src="require(`@/assets/sound/background_tense.mp3`)" type="audio/ogg">
+      </audio>
+      <div @click="audio = !audio">
+        <ion-icon :name="audio ? 'volume-off' : 'volume-high'"></ion-icon>
+      </div>
+
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import axios from '../../axios'
 import Tab from '@/components/Tabs/Tab.vue'
 import Tabs from '@/components/Tabs/Tabs.vue'
@@ -53,6 +81,7 @@ import Troublemaker from './Turns/Troublemaker.vue'
 import Drunk from './Turns/Drunk.vue'
 import Insomniac from './Turns/Insomniac.vue'
 import { Player } from '../../components/Player.vue'
+import Vote from './Vote.vue'
 
 @Component({
   components: {
@@ -61,6 +90,7 @@ import { Player } from '../../components/Player.vue'
     Minion,
     Mason,
     Seer,
+    Vote,
     Robber,
     Troublemaker,
     Drunk,
@@ -95,6 +125,56 @@ class Game extends Vue {
 
   finalUserCards: any[] = []
   finalMiddleCards: Card[] = []
+
+  audio = (localStorage.getItem('bg_audio') || 'true') === 'true'
+
+  mounted () {
+    (this.$refs['audio'] as HTMLAudioElement).volume = .5
+  }
+
+  @Watch('audio')
+  setAudio () {
+    this.fixAudio()
+    localStorage.setItem('bg_audio', this.audio ? 'true' : 'false')
+  }
+
+  fixAudio () {
+    if (this.audio) {
+      (this.$refs['audio'] as HTMLAudioElement).play()
+    } else {
+      (this.$refs['audio'] as HTMLAudioElement).pause()
+    }
+  }
+
+  get winner () {
+    if (this.highestVoted.id === 'middle') {
+      return this.finalMiddleCards.find(c => c.isWerewolf) ? 'Villagers' : 'Werewolves'
+    }
+    return (this.highestVotedPlayer.card.id === 'MinionCard' || !this.highestVotedPlayer.card.isWerewolf) ? 'Werewolves' : 'Villagers'
+  }
+
+  get highestVotedPlayer () {
+    return this.finalUserCards.find(u => u.id === this.highestVoted.id)
+  }
+
+  get highestVoted () {
+    const votes = new Map()
+    this.lobby.users.forEach(u => {
+      if (u.vote && u.vote.id) {
+        const voteId = u.vote.id
+        votes.set(voteId, votes.has(voteId) ? votes.get(voteId) + 1 : 1)
+      }
+    })
+
+    const b = [...votes.entries()].sort((a,b) => a[1] > b[1] ? -1 : 1)
+
+    if (b.length > 0) {
+      return this.lobby.users.find(u => u.id === b[0][0]) || {id:'middle'}
+    }
+
+    return {id: 'middle'}
+    // return v.shift()
+  }
 
   created () {
     events.$on('lobby.turn.start', ({card, lobby}: any) => {
@@ -156,6 +236,10 @@ class Game extends Vue {
     await axios.post(`/lobbies/${this.lobby.id}/start`)
   }
 
+  votesFor (userId: string) {
+    return this.lobby.users.filter(u => u.vote && u.vote.id === userId).length
+  }
+
   setKeeperText (text: string) {
     this.keeperText = text
     this.showKeeperText = true
@@ -188,5 +272,32 @@ export default Game
     &--show {
       color: #eaeaea;
     }
+    &-helper {
+      bottom: 0;
+      user-select: none;
+      position: fixed;
+      color: white;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      min-height: 30px;
+      text-align: center;
+      padding: 1rem;
+    }
+  }
+  .lynched {
+    background: darken(theme-color('danger'), 55%);
+    color: theme-color('danger');
+  }
+  .audio-controls {
+    position: fixed;
+    bottom: 5rem;
+    right: 1rem;
+    font-size: 32px;
+    background: theme-color('success');
+    color: black;
+    line-height: 20px;
+    padding: 1rem;
+    border-radius: 10px;
   }
 </style>

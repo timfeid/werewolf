@@ -34,6 +34,7 @@ import CardImage from '@/components/CardImage.vue'
 
 interface Card {
   id: string;
+  isWerewolf: boolean;
 }
 
 @Component({

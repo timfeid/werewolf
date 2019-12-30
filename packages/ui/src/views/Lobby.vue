@@ -15,7 +15,7 @@ import { Card } from '../store/cards/types'
 
 export interface Lobby {
   id: string;
-  users: {name: string; id: string | number; owner: boolean; color: string}[];
+  users: {name: string; id: string | number; owner: boolean; color: string, vote: {id: string}, claim: {id: string}}[];
   cards: Card[];
   started: boolean;
   dealt: boolean;
