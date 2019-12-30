@@ -15,7 +15,7 @@
     <div v-else>
       <h3>You are not alone. Werewolves:</h3>
       <div class="d-flex flex-row flex-wrap justify-content-center" style="margin-left: -.5rem">
-        <player v-for="player of data.others" :key="player.id" :player="player" />
+        <player v-for="player of data.werewolves" :key="player.id" :player="player" />
       </div>
     </div>
   </div>
