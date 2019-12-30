@@ -154,7 +154,7 @@ class Game extends Vue {
   }
 
   get highestVotedPlayer () {
-    return this.finalUserCards.find(u => u.id === this.highestVoted.id)
+    return this.finalUserCards.find(u => u.id === this.highestVoted.id) || {id: 'middle', name: 'middle'}
   }
 
   get highestVoted () {
