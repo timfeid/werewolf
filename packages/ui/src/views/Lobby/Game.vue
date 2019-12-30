@@ -50,7 +50,7 @@
     </div>
 
     <div class="audio-controls">
-      <audio ref="audio" :autoplay="audio ? true : false">
+      <audio ref="audio" :autoplay="audio ? true : false" loop>
         <source :src="require(`@/assets/sound/background_tense.mp3`)" type="audio/ogg">
       </audio>
       <div @click="audio = !audio">
