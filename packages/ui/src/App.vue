@@ -38,9 +38,10 @@ export default App
 
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
-  height: 100vh;
+  height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 $header-height: 75px;

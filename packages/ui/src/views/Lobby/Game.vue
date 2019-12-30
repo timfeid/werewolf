@@ -291,7 +291,7 @@ export default Game
   }
   .audio-controls {
     position: fixed;
-    bottom: 5rem;
+    top: 4rem;
     right: 1rem;
     font-size: 32px;
     background: theme-color('success');
