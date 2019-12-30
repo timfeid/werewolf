@@ -19,10 +19,12 @@ process.on('SIGTERM', function () {
 })
 
 process.on('SIGINT', function () {
+  console.log('leaving')
   process.exit(-1)
 })
 
 // eslint-disable-next-line handle-callback-err
 process.on('uncaughtException', function (err) {
+  console.log('leaving2')
   process.exit(-1)
 })
