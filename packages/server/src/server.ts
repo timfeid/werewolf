@@ -25,6 +25,7 @@ process.on('SIGINT', function () {
 
 // eslint-disable-next-line handle-callback-err
 process.on('uncaughtException', function (err) {
+  console.log(err)
   console.log('leaving2')
   process.exit(-1)
 })
