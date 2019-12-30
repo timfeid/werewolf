@@ -3,7 +3,7 @@ import Vue from 'vue'
 import events from './events'
 import store from './store'
 
-const url = process.env.VUE_APP_SOCKET_URL || ''
+const url = process.env.VUE_APP_SOCKET_URL || `${window.location.host}:3052`
 
 function setup (this: Vue, jwt: string) {
   const socket = io(url, {
