@@ -118,6 +118,18 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     })
   })
 
+  lobby.on('doppelganger', ({ user, card, data }) => {
+    sendMessage({
+      user,
+      message: 'lobby.turn.mine.start',
+      attrs: {
+        card: card.toObject(),
+        data,
+      }
+    })
+
+  })
+
   lobby.on('turn.start', ({ card, data }) => {
     sendMessage({
       message: 'lobby.turn.start',

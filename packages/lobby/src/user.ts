@@ -5,6 +5,7 @@ export class LobbyUser {
   protected _vote: User
   protected _isOwner: boolean
   protected _originalCard: Card
+  protected _doppelganger: Card
   protected _card: Card
   protected _claim: Card
   protected _color: string
@@ -44,6 +45,15 @@ export class LobbyUser {
 
   set claim(claim: Card) {
     this._claim = claim
+  }
+
+  get doppelganger(): Card {
+    return this._doppelganger
+  }
+
+  set doppelganger(newCard: Card) {
+    this._doppelganger = newCard
+    this._card = newCard
   }
 
   get vote(): User {

@@ -1,4 +1,5 @@
 import { Card } from './card'
+import { DoppelgangerCard } from './doppelganger'
 import { DrunkCard } from './drunk'
 import { InsomniacCard } from './insomniac'
 import { MasonCard } from './mason'
@@ -18,6 +19,10 @@ export interface CardConfiguration {
 
 // This should be in order of turn
 const cardConfiguration: CardConfiguration[] = [
+  {
+    card: DoppelgangerCard,
+    max: 1,
+  },
   {
     card: WerewolfCard,
     max: 2,

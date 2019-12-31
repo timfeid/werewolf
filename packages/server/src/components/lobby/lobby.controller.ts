@@ -2,6 +2,7 @@ import Joi from '@hapi/joi'
 import { Lobbies } from '@werewolf/lobby'
 import { Context } from 'koa'
 import { cardConfiguration } from '../../../../werewolf/src'
+import { DoppelgangerCard } from '../../../../werewolf/src/cards/doppelganger'
 import { DrunkCard } from '../../../../werewolf/src/cards/drunk'
 import { InsomniacCard } from '../../../../werewolf/src/cards/insomniac'
 import { MysticWolfCard } from '../../../../werewolf/src/cards/mystic-wolf'
@@ -102,7 +103,7 @@ export class LobbyController {
     const lobby = Lobbies.get(ctx.params.id)
 
     ctx.body = {
-      data: lobby.getOriginalCardForUserId(ctx.user.id)
+      data: lobby.getOriginalCardObjectForUserId(ctx.user.id)
     }
   }
 
@@ -138,13 +139,29 @@ export class LobbyController {
     ctx.assert(ctx.user, 403)
     const lobby = Lobbies.get(ctx.params.id)
     ctx.assert(lobby, 404)
-    const card = lobby.getOriginalCardForUserId(ctx.user.id)
+    const card = lobby.getOriginalCardObjectForUserId(ctx.user.id)
+    const user = lobby.users.find(u => u.user.id === ctx.user.id)
     ctx.assert(card, 401)
     const currentTurn = lobby.currentTurn()
     ctx.assert(currentTurn, 401)
-    ctx.assert(currentTurn.name === card.id || card.isWerewolf && currentTurn.name === WerewolfCard.name, 401)
+    ctx.assert(currentTurn.name === card.id || (card.isWerewolf && currentTurn.name === WerewolfCard.name) || (currentTurn.name === DoppelgangerCard.name && user.doppelganger), 401)
+    const currentTurnName = currentTurn.name === DoppelgangerCard.name ? lobby.getCardForUserId(ctx.user.id).constructor.name : currentTurn.name
+    console.log(currentTurnName)
 
-    switch (currentTurn.name) {
+    switch (currentTurnName) {
+      case DoppelgangerCard.name:
+        ctx.assert(ctx.request.body.view, 400)
+        ctx.assert(ctx.request.body.view.match(/P\d+/), 400)
+
+        const data = lobby.doppelganger(ctx.user.id, ctx.request.body.view)
+
+        if (ctx.request.body.view) {
+          ctx.body = {
+            data,
+          }
+        }
+        break
+
       case WerewolfCard.name:
         ctx.assert(ctx.request.body.view, 400)
         ctx.assert(ctx.request.body.view.match(/M[123]/), 400)
@@ -203,7 +220,7 @@ export class LobbyController {
         }, lobby.convertToCardPosition(ctx.request.body.swap))
 
         ctx.body = {
-          data: lobby.getCardForUserId(ctx.user.id)
+          data: lobby.getCardObjectForUserId(ctx.user.id)
         }
         break
 
@@ -236,7 +253,7 @@ export class LobbyController {
 
       case InsomniacCard.name:
         ctx.body = {
-          data: { card: lobby.getCardForUserId(ctx.user.id) }
+          data: { card: lobby.getCardObjectForUserId(ctx.user.id) }
         }
         break
     }

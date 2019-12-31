@@ -60,6 +60,12 @@ export default CardImage
     background-repeat: no-repeat;
     zoom: .15;
 
+    &-DoppelgangerCard {
+      background-position: -430px -17px;
+      width: 354px;
+      height: 407px;
+    }
+
     &-MysticWolfCard {
       background-position: -1265px -2px;
       width: 319px;

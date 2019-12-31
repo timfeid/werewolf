@@ -80,6 +80,7 @@ import Troublemaker from './Turns/Troublemaker.vue'
 import MysticWolf from './Turns/MysticWolf.vue'
 import Drunk from './Turns/Drunk.vue'
 import Insomniac from './Turns/Insomniac.vue'
+import Doppelganger from './Turns/Doppelganger.vue'
 import { Player } from '../../components/Player.vue'
 import Vote from './Vote.vue'
 
@@ -94,6 +95,7 @@ import Vote from './Vote.vue'
     Robber,
     Troublemaker,
     Drunk,
+    Doppelganger,
     Insomniac,
     MysticWolf,
   }
@@ -178,13 +180,6 @@ class Game extends Vue {
   }
 
   created () {
-    events.$on('lobby.turn.start', ({card, lobby}: any) => {
-      if (this.lobby && lobby.id === this.lobby.id) {
-        this.currentTurn = card
-      }
-    })
-
-
     events.$on('lobby.turn.timer', ({timeLeft, lobby}: {timeLeft: number; lobby: Lobby}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
         this.turnTimer = timeLeft
@@ -200,18 +195,13 @@ class Game extends Vue {
 
     events.$on('lobby.turn.mine.start', ({lobby, card, data}: {lobby: Lobby; card: Card; data: Record<string, any>}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
+        this.currentTurn = card
         this.myTurn = true
         this.data = data
       }
     })
 
     events.$on('lobby.turn.end', ({lobby, card}: {lobby: Lobby; card: Card}) => {
-      if (this.lobby && lobby.id === this.lobby.id) {
-        // console.log('end', lobby, card)
-      }
-    })
-
-    events.$on('lobby.turn.mine.end', ({lobby, card}: {lobby: Lobby; card: Card}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
         this.myTurn = false
       }

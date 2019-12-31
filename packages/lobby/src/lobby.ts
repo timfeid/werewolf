@@ -269,20 +269,44 @@ export class Lobby extends EventEmitter {
     return this.middle[position.index]
   }
 
-  getOriginalCardForUserId(userId: string | number) {
+  getOriginalCardForUserId(userId: string) {
     for (const u of this._users) {
       if (u.user.id === userId) {
-        return u.originalCard.toObject()
+        return u.doppelganger || u.originalCard
       }
     }
   }
 
-  getCardForUserId(userId: string | number) {
+  getOriginalCardObjectForUserId(userId: string) {
+    const card = this.getOriginalCardForUserId(userId)
+    if (card) {
+      return card.toObject()
+    }
+  }
+
+  getCardForUserId(userId: string) {
     for (const u of this._users) {
       if (u.user.id === userId) {
-        return u.card.toObject()
+        return u.card
       }
     }
+  }
+
+  getCardObjectForUserId(userId: string) {
+    const card = this.getCardForUserId(userId)
+    if (card) {
+      return card.toObject()
+    }
+  }
+
+  doppelganger(userId: string, position: CardPosition | string) {
+    const user = this.users.find(u => u.user.id === userId)
+    const card = this.getCard(position)
+    user.doppelganger = card
+
+    this.emit('doppelganger', { user, card, data: card.data(this) })
+
+    return card.toObject()
   }
 
   swapCards(swapIndex: CardPosition, withIndex: CardPosition) {
@@ -313,7 +337,7 @@ export class Lobby extends EventEmitter {
   }
 
   findOriginalWerewolves() {
-    return this._users.filter(u => u.originalCard.isWerewolf)
+    return this._users.filter(u => u.originalCard.isWerewolf || (u.doppelganger && u.doppelganger.isWerewolf))
   }
 
   end () {
@@ -324,7 +348,6 @@ export class Lobby extends EventEmitter {
     const card = this.cards.find(c => c.constructor.name === cardId)
     const user = this.users.find(u => u.user.id === userId)
     if (!card || !user) {
-      console.log(cardId, this.cards, userId, this.users)
       return false
     }
 
@@ -339,7 +362,6 @@ export class Lobby extends EventEmitter {
     const user = this.users.find(u => u.user.id === userId)
     const vote = voteUserId === 'middle' ? {user: {id: 'middle', name: 'middle'}} : this.users.find(u => u.user.id === voteUserId)
     if (!vote || !user) {
-      console.log(voteUserId, userId, this.users)
       return false
     }
 
