@@ -126,6 +126,7 @@ export class LobbyController {
     ctx.assert(ctx.user, 403)
     const lobby = Lobbies.get(ctx.params.id)
     ctx.assert(ctx.request.body.id, 400)
+    ctx.assert(lobby, 404)
 
     const claim = lobby.setVote(ctx.user.id, ctx.request.body.id)
 

@@ -142,7 +142,7 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
       }
     })
 
-    let users = lobby.users.filter(u => u.originalCard.constructor.name === card.constructor.name)
+    let users = lobby.users.filter(u => u.originalCard.constructor.name === card.constructor.name || (u.copycat && u.copycat.constructor.name === card.constructor.name))
 
     if (card.constructor.name === WerewolfCard.name) {
       users = lobby.users.filter(u => u.originalCard.isWerewolf)
