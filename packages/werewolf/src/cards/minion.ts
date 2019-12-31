@@ -1,6 +1,5 @@
 import { Lobby } from '../../../lobby/src'
 import { Card } from './card'
-import { WerewolfCard } from './werewolf'
 
 export class MinionCard extends Card {
   get name() {
@@ -17,7 +16,7 @@ export class MinionCard extends Card {
 
   data(lobby: Lobby): any {
     return {
-      werewolves: lobby.findPlayersWithOriginalCard(WerewolfCard.name).map(u => u.toObject())
+      werewolves: lobby.findOriginalWerewolves().map(u => u.toObject())
     }
   }
 
