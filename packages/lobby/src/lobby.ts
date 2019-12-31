@@ -1,5 +1,6 @@
 import { Card, cardConfiguration, User, Werewolf } from '@werewolf/werewolf'
 import { EventEmitter } from 'typeorm/platform/PlatformTools'
+import { DoppelgangerCard } from '../../werewolf/src/cards/doppelganger'
 import { MinionCard } from '../../werewolf/src/cards/minion'
 import { RobberCard } from '../../werewolf/src/cards/robber'
 import { SeerCard } from '../../werewolf/src/cards/seer'
@@ -272,7 +273,7 @@ export class Lobby extends EventEmitter {
   getOriginalCardForUserId(userId: string) {
     for (const u of this._users) {
       if (u.user.id === userId) {
-        return u.doppelganger || u.originalCard
+        return u.originalCard
       }
     }
   }
@@ -304,7 +305,17 @@ export class Lobby extends EventEmitter {
     const card = this.getCard(position)
     user.doppelganger = card
 
-    this.emit('doppelganger', { user, card, data: card.data(this) })
+    if (DoppelgangerCard.doNotGoFor.indexOf(card.constructor.name) === -1) {
+      this.emit('doppelganger.turn', { user, card, data: card.data(this) })
+    }
+
+    return card.toObject()
+  }
+
+  copycat(userId: string, position: CardPosition | string) {
+    const user = this.users.find(u => u.user.id === userId)
+    const card = this.getCard(position)
+    user.copycat = card
 
     return card.toObject()
   }
@@ -337,7 +348,7 @@ export class Lobby extends EventEmitter {
   }
 
   findOriginalWerewolves() {
-    return this._users.filter(u => u.originalCard.isWerewolf || (u.doppelganger && u.doppelganger.isWerewolf))
+    return this._users.filter(u => u.originalCard.isWerewolf)
   }
 
   end () {

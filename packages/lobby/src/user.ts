@@ -1,4 +1,6 @@
 import { Card, User } from '@werewolf/werewolf'
+import { CopycatCard } from '../../werewolf/src/cards/copycat'
+import { DoppelgangerCard } from '../../werewolf/src/cards/doppelganger'
 
 export class LobbyUser {
   protected _user: User
@@ -6,6 +8,7 @@ export class LobbyUser {
   protected _isOwner: boolean
   protected _originalCard: Card
   protected _doppelganger: Card
+  protected _copycat: Card
   protected _card: Card
   protected _claim: Card
   protected _color: string
@@ -52,8 +55,19 @@ export class LobbyUser {
   }
 
   set doppelganger(newCard: Card) {
+    (this._originalCard as DoppelgangerCard).isWerewolf = newCard.isWerewolf
     this._doppelganger = newCard
-    this._card = newCard
+  }
+
+  get copycat(): Card {
+    return this._copycat
+  }
+
+  set copycat(newCard: Card) {
+    (this._originalCard as CopycatCard).isWerewolf = newCard.isWerewolf
+    this._doppelganger = newCard
+
+    this._copycat = newCard
   }
 
   get vote(): User {

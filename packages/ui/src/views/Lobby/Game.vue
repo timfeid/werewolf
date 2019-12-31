@@ -79,6 +79,7 @@ import Robber from './Turns/Robber.vue'
 import Troublemaker from './Turns/Troublemaker.vue'
 import MysticWolf from './Turns/MysticWolf.vue'
 import Drunk from './Turns/Drunk.vue'
+import Copycat from './Turns/Copycat.vue'
 import Insomniac from './Turns/Insomniac.vue'
 import Doppelganger from './Turns/Doppelganger.vue'
 import { Player } from '../../components/Player.vue'
@@ -87,6 +88,7 @@ import Vote from './Vote.vue'
 @Component({
   components: {
     CardImage,
+    Copycat,
     Werewolf,
     Minion,
     Mason,

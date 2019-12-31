@@ -1,5 +1,5 @@
 import { Socket } from '@werewolf/socket'
-import { User } from '@werewolf/werewolf'
+import { Card, User } from '@werewolf/werewolf'
 import { RedisClient } from 'redis'
 import emitter from 'socket.io-emitter'
 import { Lobby } from '..'
@@ -55,6 +55,18 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     sendMessage({
       message: 'lobby.refresh',
     })
+  }
+
+  function sendTurnStart(user: LobbyUser, card: Card, data: any) {
+    sendMessage({
+      user,
+      message: 'lobby.turn.mine.start',
+      attrs: {
+        card: card.toObject(),
+        data,
+      }
+    })
+
   }
 
 
@@ -118,16 +130,8 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     })
   })
 
-  lobby.on('doppelganger', ({ user, card, data }) => {
-    sendMessage({
-      user,
-      message: 'lobby.turn.mine.start',
-      attrs: {
-        card: card.toObject(),
-        data,
-      }
-    })
-
+  lobby.on('doppelganger.turn', ({ user, card, data }) => {
+    sendTurnStart(user, card, data)
   })
 
   lobby.on('turn.start', ({ card, data }) => {
@@ -145,14 +149,7 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     }
 
     users.forEach(u => {
-      sendMessage({
-        message: 'lobby.turn.mine.start',
-        user: u,
-        attrs: {
-          card: card.toObject(),
-          data,
-        }
-      })
+      sendTurnStart(u, card, data)
     })
   })
 

@@ -2,6 +2,7 @@ import Joi from '@hapi/joi'
 import { Lobbies } from '@werewolf/lobby'
 import { Context } from 'koa'
 import { cardConfiguration } from '../../../../werewolf/src'
+import { CopycatCard } from '../../../../werewolf/src/cards/copycat'
 import { DoppelgangerCard } from '../../../../werewolf/src/cards/doppelganger'
 import { DrunkCard } from '../../../../werewolf/src/cards/drunk'
 import { InsomniacCard } from '../../../../werewolf/src/cards/insomniac'
@@ -144,20 +145,29 @@ export class LobbyController {
     ctx.assert(card, 401)
     const currentTurn = lobby.currentTurn()
     ctx.assert(currentTurn, 401)
-    ctx.assert(currentTurn.name === card.id || (card.isWerewolf && currentTurn.name === WerewolfCard.name) || (currentTurn.name === DoppelgangerCard.name && user.doppelganger), 401)
-    const currentTurnName = currentTurn.name === DoppelgangerCard.name ? lobby.getCardForUserId(ctx.user.id).constructor.name : currentTurn.name
+    ctx.assert(currentTurn.name === card.id || (card.isWerewolf && currentTurn.name === WerewolfCard.name) || (card.id === CopycatCard.name && user.copycat && currentTurn.name === user.copycat.constructor.name), 401)
+    const currentTurnName = (currentTurn.name === DoppelgangerCard.name && user.doppelganger) ? user.doppelganger.constructor.name : currentTurn.name
     console.log(currentTurnName)
 
     switch (currentTurnName) {
+      case CopycatCard.name:
+        ctx.assert(ctx.request.body.view, 400)
+        ctx.assert(ctx.request.body.view.match(/M[123]+/), 400)
+
+        if (ctx.request.body.view) {
+          ctx.body = {
+            data: lobby.copycat(ctx.user.id, ctx.request.body.view),
+          }
+        }
+        break
+
       case DoppelgangerCard.name:
         ctx.assert(ctx.request.body.view, 400)
         ctx.assert(ctx.request.body.view.match(/P\d+/), 400)
 
-        const data = lobby.doppelganger(ctx.user.id, ctx.request.body.view)
-
         if (ctx.request.body.view) {
           ctx.body = {
-            data,
+            data: lobby.doppelganger(ctx.user.id, ctx.request.body.view),
           }
         }
         break
@@ -201,7 +211,7 @@ export class LobbyController {
 
       case MysticWolfCard.name:
         ctx.assert(ctx.request.body.view, 400)
-        ctx.assert(ctx.request.body.view.match(/[MP]\d+/), 400)
+        ctx.assert(ctx.request.body.view.match(/P\d+/), 400)
 
         if (ctx.request.body.view) {
           ctx.body = {

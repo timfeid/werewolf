@@ -60,6 +60,13 @@ export default CardImage
     background-repeat: no-repeat;
     zoom: .15;
 
+    &-CopycatCard {
+    background: asset('cards2.png');
+      background-position: -55px -1px;
+      width: 290px;
+      height: 407px;
+    }
+
     &-DoppelgangerCard {
       background-position: -430px -17px;
       width: 354px;
