@@ -1,30 +1,18 @@
 <template>
   <div class="text-center mt-4">
     <div v-if="selecting">
-
-      <div>
-        Select two of these
-      </div>
-      <middle
-        :allowed-selections="2"
-        @selected="selected"
-      />
-      <div>or one of</div>
       <div class="d-flex flex-row justify-content-center">
         <player v-for="player of playersBesideMe" :key="player.id" @click.native="selectedPlayer(player)" :player="player" style="cursor: pointer;" />
       </div>
     </div>
-    <div v-if="cards">
-      The cards you viewed were
-      <div v-for="card in cards">
-
-        {{ card.name }}
-      </div>
+    <div v-if="viewedCard">
+      The card you viewed was
+        {{ viewedCard.name }}
     </div>
 
 
     <audio autoplay="true">
-      <source :src="require(`@/assets/sound/wake/SeerCard.mp3`)" type="audio/ogg">
+      <source :src="require(`@/assets/sound/wake/MysticWolfCard.mp3`)" type="audio/ogg">
     </audio>
   </div>
 </template>
@@ -43,9 +31,9 @@ import axios from '../../../axios'
     Player,
   }
 })
-class SeerTurn extends TurnMixin {
+class MysticWolfTurn extends TurnMixin {
   selecting = true
-  cards: Card[] | null = null
+  viewedCard: Card | null = null
 
   selectedPlayer (player: PlayerType) {
     const index = this.playerIndex(player)
@@ -54,18 +42,16 @@ class SeerTurn extends TurnMixin {
 
   async selected (cards: string[]) {
     this.selecting = false
+
     const response = await axios.post(`/lobbies/${this.lobby.id}/turn`, {
-      view: cards,
+      view: cards[0],
     })
-    this.cards = response.data.data
-    if (cards.length === 1) {
-      const player = this.lobby.users[parseInt(cards[0][1], 10)-1]
-      this.$emit('keeper-text', `${player.name}'s card was ` + response.data.data.map((card: Card) => card.name).join(', '))
-    } else {
-      this.$emit('keeper-text', 'The cards you saw were ' + response.data.data.map((card: any) => `${card.position}: ${card.name}`).join(', '))
-    }
+
+    this.viewedCard = response.data.data
+    const player = this.lobby.users[parseInt(cards[0][1], 10)-1]
+    this.$emit('keeper-text', `wolves: ${this.data.werewolves.map((w: any) => w.name).join(', ')}; ${player.name}: ` + response.data.data.name)
   }
 }
 
-export default SeerTurn
+export default MysticWolfTurn
 </script>

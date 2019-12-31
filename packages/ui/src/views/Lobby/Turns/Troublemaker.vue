@@ -66,3 +66,13 @@ class TroublemakerTurn extends TurnMixin {
 
 export default TroublemakerTurn
 </script>
+
+<style lang="scss">
+  .player-selection {
+    cursor: pointer;
+    opacity: .4;
+    &--selected {
+      opacity: 1;
+    }
+  }
+</style>

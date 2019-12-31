@@ -312,6 +312,10 @@ export class Lobby extends EventEmitter {
     return this._users.filter(u => u.originalCard.constructor.name === cardId)
   }
 
+  findOriginalWerewolves() {
+    return this._users.filter(u => u.originalCard.isWerewolf)
+  }
+
   end () {
     this.juryTimeLeft = 1
   }

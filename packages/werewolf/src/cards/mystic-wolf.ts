@@ -1,13 +1,13 @@
 import { Lobby } from '@werewolf/lobby'
 import { Card } from './card'
 
-export class WerewolfCard extends Card {
+export class MysticWolfCard extends Card {
   get name() {
-    return 'Werewolf'
+    return 'Mystic Wolf'
   }
 
   get description() {
-    return 'Werewolf'
+    return 'Mystic wolf'
   }
 
   get isWerewolf() {

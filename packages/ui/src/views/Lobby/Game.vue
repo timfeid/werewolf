@@ -1,8 +1,7 @@
 <template>
   <div>
     <div v-if="card" class="your-card">
-      <card-image width="100%" :card="card" />
-      <div>{{ card.name }}</div>
+      <card-image style="width: 100%" :card="card" />
       <audio autoplay="true">
         <source :src="require(`@/assets/sound/rules/${card.id}.mp3`)" type="audio/ogg">
       </audio>
@@ -12,12 +11,12 @@
       {{ currentTurn.name }} {{ turnTimer }} seconds
     </h4>
 
-    <component v-if="currentTurn && myTurn" :is="currentTurn.name || 'Werewolf'" :data="data" :lobby="lobby" :card="currentTurn" @keeper-text="setKeeperText"  />
+    <component v-if="currentTurn && myTurn" :is="currentTurn.name.replace(/\s+/g, '') || 'Werewolf'" :data="data" :lobby="lobby" :card="currentTurn" @keeper-text="setKeeperText"  />
 
     <vote v-if="juryTimer > 0" :jury-timer="juryTimer" :lobby="lobby" :owner="owner" />
 
     <div class="mt-4" v-if="finished">
-      <h4 class="text-center mb-0">The town voted to lynch {{ highestVotedPlayer.name }}!</h4>
+      <h4 class="text-center mb-0">The town voted to lynch {{ highestVotedPlayer.name }}</h4>
       <h1 class="text-center">{{ winner }} win!</h1>
       <ul class="list-group">
         <li class="list-group-item d-flex" v-for="obj in finalUserCards" :class="{lynched: highestVotedPlayer.id === obj.id}">
@@ -78,6 +77,7 @@ import Mason from './Turns/Mason.vue'
 import Seer from './Turns/Seer.vue'
 import Robber from './Turns/Robber.vue'
 import Troublemaker from './Turns/Troublemaker.vue'
+import MysticWolf from './Turns/MysticWolf.vue'
 import Drunk from './Turns/Drunk.vue'
 import Insomniac from './Turns/Insomniac.vue'
 import { Player } from '../../components/Player.vue'
@@ -95,6 +95,7 @@ import Vote from './Vote.vue'
     Troublemaker,
     Drunk,
     Insomniac,
+    MysticWolf,
   }
 })
 class Game extends Vue {
@@ -217,7 +218,6 @@ class Game extends Vue {
     })
 
     events.$on('lobby.jury', ({timeLeft, lobby}: {timeLeft: number; lobby: Lobby}) => {
-      console.log('hello?')
       if (this.lobby && lobby.id === this.lobby.id) {
         this.myTurn = false
         this.currentTurn = null
@@ -226,9 +226,11 @@ class Game extends Vue {
     })
 
     events.$on('lobby.end', ({lobby, users, middle}: {lobby: any;users: any;middle: any}) => {
-      this.finished = true
-      this.finalMiddleCards = middle
-      this.finalUserCards = users
+      if (this.lobby && lobby.id === this.lobby.id) {
+        this.finished = true
+        this.finalMiddleCards = middle
+        this.finalUserCards = users
+      }
     })
   }
 
@@ -252,7 +254,7 @@ export default Game
 
 <style lang="scss">
   .your-card {
-    margin: 0 auto;
+    margin: 0 auto 1rem;
     text-align: center;
     img {
       width: 60px;

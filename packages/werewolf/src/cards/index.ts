@@ -3,6 +3,7 @@ import { DrunkCard } from './drunk'
 import { InsomniacCard } from './insomniac'
 import { MasonCard } from './mason'
 import { MinionCard } from './minion'
+import { MysticWolfCard } from './mystic-wolf'
 import { RobberCard } from './robber'
 import { SeerCard } from './seer'
 import { TroublemakerCard } from './troublemaker'
@@ -20,6 +21,10 @@ const cardConfiguration: CardConfiguration[] = [
   {
     card: WerewolfCard,
     max: 2,
+  },
+  {
+    card: MysticWolfCard,
+    max: 1,
   },
   {
     card: MinionCard,

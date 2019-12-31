@@ -43,6 +43,7 @@ export default Middle
 <style lang="scss">
   .middle {
     color: black !important;
+    cursor: pointer;
     &--selected {
       background-color: aqua !important;
     }

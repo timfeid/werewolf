@@ -43,13 +43,17 @@ class WerewolfTurn extends TurnMixin {
   selecting = true
   middleCard: Card | null = null
 
+  mounted () {
+    this.$emit('keeper-text', `wolves: ${this.data.werewolves.map((w: any) => w.name).join(', ')}`)
+  }
+
   async selected (card: string[]) {
     this.selecting = false
     const response = await axios.post(`/lobbies/${this.lobby.id}/turn`, {
       view: card[0],
     })
     this.middleCard = response.data.data
-    this.$emit('keeper-text', `The card you saw was ${response.data.data.name}`)
+    this.$emit('keeper-text', `wolves: ${this.data.werewolves.map((w: any) => w.name).join(', ')} middle card: ${response.data.data.name}`)
   }
 
   get werewolfCount () {

@@ -4,6 +4,7 @@ import { Context } from 'koa'
 import { cardConfiguration } from '../../../../werewolf/src'
 import { DrunkCard } from '../../../../werewolf/src/cards/drunk'
 import { InsomniacCard } from '../../../../werewolf/src/cards/insomniac'
+import { MysticWolfCard } from '../../../../werewolf/src/cards/mystic-wolf'
 import { RobberCard } from '../../../../werewolf/src/cards/robber'
 import { SeerCard } from '../../../../werewolf/src/cards/seer'
 import { TroublemakerCard } from '../../../../werewolf/src/cards/troublemaker'
@@ -141,9 +142,9 @@ export class LobbyController {
     ctx.assert(card, 401)
     const currentTurn = lobby.currentTurn()
     ctx.assert(currentTurn, 401)
-    ctx.assert(currentTurn.name === card.id, 401)
+    ctx.assert(currentTurn.name === card.id || card.isWerewolf && currentTurn.name === WerewolfCard.name, 401)
 
-    switch (card.id) {
+    switch (currentTurn.name) {
       case WerewolfCard.name:
         ctx.assert(ctx.request.body.view, 400)
         ctx.assert(ctx.request.body.view.match(/M[123]/), 400)
@@ -177,6 +178,17 @@ export class LobbyController {
                 position: lookup,
               }
             })
+          }
+        }
+        break
+
+      case MysticWolfCard.name:
+        ctx.assert(ctx.request.body.view, 400)
+        ctx.assert(ctx.request.body.view.match(/[MP]\d+/), 400)
+
+        if (ctx.request.body.view) {
+          ctx.body = {
+            data: lobby.getCard(ctx.request.body.view).toObject(),
           }
         }
         break

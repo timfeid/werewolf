@@ -3,8 +3,9 @@
     <h3>Selected cards</h3>
     <div class="d-flex flex-row card-list flex-wrap">
       <template v-for="card of $store.state.cards.cards">
-        <div @click="isSelected(card.card, i) ? removeCard(card.card) : addCard(card.card)" v-for="i in card.max" class="card" :class="{ 'card--selected': isSelected(card.card, i) }">
+        <div @click="isSelected(card.card, i) ? removeCard(card.card) : addCard(card.card)" v-for="i in card.max">
           <card-image
+            :class="{ 'card--selected': isSelected(card.card, i) }"
             :card="card.card"
             width="100%"
           />
@@ -96,16 +97,10 @@ export default Cards
 
 <style lang="scss">
   .card-list {
-    .card {
-      max-width: 25%;
-      border: 1px solid white;
-      img {
-        opacity: .25;
-      }
-      &--selected {
-        img {
-          opacity: 1;
-        }
+    .card-container {
+      opacity: .25;
+      &.card--selected {
+        opacity: 1;
       }
     }
   }

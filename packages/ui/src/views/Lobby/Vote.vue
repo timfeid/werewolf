@@ -11,7 +11,7 @@
       </div>
       <div class="d-flex flex-wrap justify-content-center">
         <div class="claim-card" v-for="card in lobby.cards" @click="claim(card)">
-          <card-image width="100%" :card="card" />
+          <card-image style="width: 100%" :card="card" />
         </div>
       </div>
     </div>
@@ -119,7 +119,7 @@ export default Vote
 
 <style lang="scss">
 .claim-card {
-  max-width: 16%;
+  width: 24%;
   cursor: pointer;
   margin-left: 3px;
   margin-top: 3px;

@@ -3,6 +3,7 @@ import { User } from '@werewolf/werewolf'
 import { RedisClient } from 'redis'
 import emitter from 'socket.io-emitter'
 import { Lobby } from '..'
+import { WerewolfCard } from '../../../werewolf/src/cards/werewolf'
 import { LobbyUser } from '../user'
 
 
@@ -125,7 +126,13 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
       }
     })
 
-    lobby.users.filter(u => u.originalCard.constructor.name === card.constructor.name).forEach(u => {
+    let users = lobby.users.filter(u => u.originalCard.constructor.name === card.constructor.name)
+
+    if (card.constructor.name === WerewolfCard.name) {
+      users = lobby.users.filter(u => u.originalCard.isWerewolf)
+    }
+
+    users.forEach(u => {
       sendMessage({
         message: 'lobby.turn.mine.start',
         user: u,
