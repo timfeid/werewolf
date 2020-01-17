@@ -29,6 +29,7 @@
     "socket.io": "^2.3.0",
     "socket.io-redis": "^5.2.0",
     "sql.js": "^1.0.0",
+    "ts-node-dev": "^1.0.0-pre.44",
     "typeorm": "^0.2.19",
     "typeorm-factory": "^0.0.13",
     "typescript": "^3.6.3"
