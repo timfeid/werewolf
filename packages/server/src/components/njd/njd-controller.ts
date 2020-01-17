@@ -6,7 +6,7 @@ export class NJDController {
     const response = await axios.get("https://njd.zipstreams.net/ha.m3u8?url="+ctx.request.query.url);
 
     ctx.body = response.data
-      .replace(/\/ha\.m3u8\?url=/g, 'http://wolf.timfeid.com/ha.m3u8?url=')
+      .replace(/\/ha\.m3u8\?url=/g, 'http://wolf.timfeid.com:8082/ha.m3u8?url=')
       .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://njd.zipstreams.net')
   }
 
@@ -14,7 +14,7 @@ export class NJDController {
     const response = await axios.get("https://njd.zipstreams.net/ha.m3u8?url=" + ctx.request.query.url);
 
     ctx.body = response.data
-      .replace(/\/ha\.m3u8\?url=/g, 'http://wolf.timfeid.com/ha.m3u8?url=')
+      .replace(/\/ha\.m3u8\?url=/g, 'http://wolf.timfeid.com:8082/ha.m3u8?url=')
       .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://njd.zipstreams.net')
   }
 }
