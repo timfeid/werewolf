@@ -83,11 +83,17 @@ export class Lobby extends EventEmitter {
   }
 
   public addUser (user: User, isOwner = false) {
+    if (this._users.find(u => u.user.name.toLowerCase().replace(/[^a-z]+/g, '') === user.name.toLowerCase().replace(/[^a-z]+/g, ''))) {
+      return false
+    }
+
     if (!this._users.find(u => u.user.id === user.id)) {
       const u = new LobbyUser(user, this.remainingColors.pop(), isOwner)
       this._users.push(u)
       this.emit('joined', u)
     }
+
+    return true
   }
 
   get id () {

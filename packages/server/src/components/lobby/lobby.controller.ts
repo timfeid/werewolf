@@ -40,7 +40,7 @@ export class LobbyController {
     const lobby = Lobbies.get(ctx.params.id)
     ctx.assert(lobby, 404)
 
-    lobby.addUser(ctx.user)
+    ctx.assert(lobby.addUser(ctx.user), 400)
 
     ctx.body = {
       data: lobby.toObject()

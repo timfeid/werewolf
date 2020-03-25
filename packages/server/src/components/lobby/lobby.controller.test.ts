@@ -38,7 +38,7 @@ describe('lobby controller', () => {
     app.emit('setSubClient', subClient)
 
     owner = { name: 'bob', id: 'maksndj' }
-    user = { name: 'bob2', id: 'makfsndj'}
+    user = { name: 'notbob', id: 'makfsndj'}
     token = await JwtService.sign(owner)
 
 
@@ -107,7 +107,7 @@ describe('lobby controller', () => {
         expect(users.map((r: any) => r.id)).to.eql([owner.id, user.id])
 
         await request('post', `/lobbies/${lobbyId}/join`, {
-          user: {name: 'baob', id: 'madsksndj'}
+          user: { name: 'baob', id: 'madsksndj' }
         })
         resolve()
       })
@@ -121,6 +121,22 @@ describe('lobby controller', () => {
       expect(response.body.data).to.have.property('cards')
 
     })
+  })
+
+  it('can\'t join lobby with same name as someone else', async () => {
+    const newUser = { id: 'somethingelse', name: user.name }
+    const response = await request('post', `/lobbies/${lobbyId}/join`, {
+      user: newUser,
+    })
+    expect(response.status).to.eq(400)
+  })
+
+  it('can\'t join lobby with same name as someone else with different spaces n shit', async () => {
+    const newUser = { id: 'somethingelse', name: `-${user.name}2 ` }
+    const response = await request('post', `/lobbies/${lobbyId}/join`, {
+      user: newUser,
+    })
+    expect(response.status).to.eq(400)
   })
 
   it('owner can change cards', async () => {
