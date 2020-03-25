@@ -6,8 +6,6 @@
   "author": "<sv2@github.com>",
   "private": true,
   "scripts": {
-    "start": "yarn build && node dist/server.js",
-    "build": "tsc",
     "test": "NODE_ENV=test ts-mocha 'src/**/*.test.ts' --exit"
   },
   "dependencies": {
