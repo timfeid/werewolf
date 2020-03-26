@@ -56,7 +56,7 @@ const SettingsStore = namespace('settings')
   }
 })
 class Settings extends Vue {
-  open = true
+  open = false
   testies = 0
 
   @SettingsStore.State musicVolume!: number
@@ -72,6 +72,7 @@ export default Settings
 
 <style lang="scss">
   .settings {
+    z-index: 9999;
     position: fixed;
     top: 0;
     bottom: 0;
