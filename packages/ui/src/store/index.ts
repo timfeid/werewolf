@@ -3,6 +3,7 @@ import Vuex, { StoreOptions } from 'vuex'
 import { cards } from './cards'
 import { RootState } from './types'
 import { user } from './user'
+import { settings } from './settings'
 
 Vue.use(Vuex)
 
@@ -13,6 +14,7 @@ const store: StoreOptions<RootState> = {
   modules: {
     user,
     cards,
+    settings,
   }
 }
 

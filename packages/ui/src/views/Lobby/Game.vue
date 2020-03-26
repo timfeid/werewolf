@@ -2,7 +2,7 @@
   <div>
     <div v-if="card" class="your-card">
       <card-image style="width: 100%" :card="card" />
-      <audio autoplay="true">
+      <audio ref="voiceaudio" autoplay="true">
         <source :src="require(`@/assets/sound/rules/${card.id}.mp3`)" type="audio/ogg">
       </audio>
     </div>
@@ -48,15 +48,6 @@
       </button>
     </div>
 
-    <div class="audio-controls">
-      <audio ref="audio" :autoplay="audio ? true : false" loop>
-        <source :src="require(`@/assets/sound/background_tense.mp3`)" type="audio/ogg">
-      </audio>
-      <div @click="audio = !audio">
-        <ion-icon :name="audio ? 'volume-off' : 'volume-high'"></ion-icon>
-      </div>
-
-    </div>
   </div>
 </template>
 
@@ -84,6 +75,9 @@ import Insomniac from './Turns/Insomniac.vue'
 import Doppelganger from './Turns/Doppelganger.vue'
 import { Player } from '../../components/Player.vue'
 import Vote from './Vote.vue'
+import {namespace} from 'vuex-class'
+
+const SettingsStore = namespace('settings')
 
 @Component({
   components: {
@@ -112,6 +106,9 @@ class Game extends Vue {
   @Prop({required: false, type: Object})
   card!: Card
 
+  @SettingsStore.State musicVolume!: number
+  @SettingsStore.State voiceVolume!: number
+
   data: Record<string, any> = {}
 
   keeperText = 'No information yet'
@@ -131,24 +128,15 @@ class Game extends Vue {
   finalUserCards: any[] = []
   finalMiddleCards: Card[] = []
 
-  audio = (localStorage.getItem('bg_audio') || 'true') === 'true'
-
   mounted () {
-    (this.$refs['audio'] as HTMLAudioElement).volume = .5
+    this.setMusicVolume()
   }
 
-  @Watch('audio')
-  setAudio () {
-    this.fixAudio()
-    localStorage.setItem('bg_audio', this.audio ? 'true' : 'false')
-  }
-
-  fixAudio () {
-    if (this.audio) {
-      (this.$refs['audio'] as HTMLAudioElement).play()
-    } else {
-      (this.$refs['audio'] as HTMLAudioElement).pause()
-    }
+  @Watch('musicVolume')
+  @Watch('voiceVolume')
+  setMusicVolume () {
+    (this.$refs['audio'] as HTMLAudioElement).volume = this.musicVolume / 100;
+    (this.$refs['voiceaudio'] as HTMLAudioElement).volume = this.voiceVolume / 100
   }
 
   get winner () {
