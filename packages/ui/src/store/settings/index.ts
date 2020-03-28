@@ -1,5 +1,3 @@
-import axios from '@/axios'
-import webtoken from 'jsonwebtoken'
 import { ActionTree, GetterTree, Module, MutationTree } from 'vuex'
 import { RootState } from '../types'
 
@@ -11,7 +9,7 @@ type SettingsStore = {
 }
 
 export const state: SettingsStore = {
-  musicVolume: parseInt(localStorage['music-volume'] || '50', 10),
+  musicVolume: parseInt(localStorage['music-volume'] || '25', 10),
   voiceVolume: parseInt(localStorage['voice-volume'] || '75', 10),
 }
 

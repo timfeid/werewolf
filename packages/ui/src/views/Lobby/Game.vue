@@ -6,6 +6,18 @@
         <source :src="require(`@/assets/sound/rules/${card.id}.mp3`)" type="audio/ogg">
       </audio>
     </div>
+    <audio ref="notification">
+      <source :src="require(`@/assets/sound/accomplished.mp3`)" type="audio/ogg">
+    </audio>
+    <audio ref="audio" autoplay="true">
+      <source :src="require(`@/assets/sound/background_tense.mp3`)" type="audio/ogg">
+    </audio>
+    <audio ref="winner">
+      <source :src="require(`@/assets/sound/yay.mp3`)" type="audio/ogg">
+    </audio>
+    <audio ref="loser">
+      <source :src="require(`@/assets/sound/aw.mp3`)" type="audio/ogg">
+    </audio>
 
     <h4 class="text-center" v-if="currentTurn">
       {{ currentTurn.name }} {{ turnTimer }} seconds
@@ -78,6 +90,7 @@ import Vote from './Vote.vue'
 import {namespace} from 'vuex-class'
 
 const SettingsStore = namespace('settings')
+const UserStore = namespace('user')
 
 @Component({
   components: {
@@ -108,6 +121,7 @@ class Game extends Vue {
 
   @SettingsStore.State musicVolume!: number
   @SettingsStore.State voiceVolume!: number
+  @UserStore.Getter id!: string
 
   data: Record<string, any> = {}
 
@@ -132,11 +146,20 @@ class Game extends Vue {
     this.setMusicVolume()
   }
 
+  @Watch('card')
   @Watch('musicVolume')
   @Watch('voiceVolume')
   setMusicVolume () {
     (this.$refs['audio'] as HTMLAudioElement).volume = this.musicVolume / 100;
-    (this.$refs['voiceaudio'] as HTMLAudioElement).volume = this.voiceVolume / 100
+    (this.$refs['notification'] as HTMLAudioElement).volume = this.voiceVolume / 100;
+    (this.$refs['winner'] as HTMLAudioElement).volume = this.musicVolume / 100;
+    (this.$refs['loser'] as HTMLAudioElement).volume = this.musicVolume / 100;
+
+    this.$nextTick (() => {
+      if (this.$refs['voiceaudio']) {
+        (this.$refs['voiceaudio'] as HTMLAudioElement).volume = this.voiceVolume / 100
+      }
+    })
   }
 
   get winner () {
@@ -169,6 +192,26 @@ class Game extends Vue {
     // return v.shift()
   }
 
+  playNotification () {
+    (this.$refs['notification'] as HTMLAudioElement).play()
+
+  }
+
+  playFinalSound () {
+    let finalSound = 'loser'
+    const myFinal = this.finalUserCards.find(u => u.id === this.id)
+    if ((myFinal.card.isWerewolf || myFinal.card.id === 'MinionCard') && this.winner === 'Werewolves') {
+      finalSound = 'winner'
+    } else if (!myFinal.card.isWerewolf && myFinal.card.id !== 'MinionCard' && this.winner === 'Villagers') {
+      finalSound = 'winner'
+    }
+
+    (this.$refs[finalSound] as HTMLAudioElement).play()
+
+
+
+  }
+
   created () {
     events.$on('lobby.turn.timer', ({timeLeft, lobby}: {timeLeft: number; lobby: Lobby}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
@@ -180,6 +223,7 @@ class Game extends Vue {
     events.$on('lobby.turn.start', ({lobby, card}: {lobby: Lobby; card: Card}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
         this.currentTurn = card
+        this.playNotification()
       }
     })
 
@@ -210,6 +254,7 @@ class Game extends Vue {
         this.finished = true
         this.finalMiddleCards = middle
         this.finalUserCards = users
+        this.playFinalSound()
       }
     })
   }

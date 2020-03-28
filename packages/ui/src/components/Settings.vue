@@ -11,6 +11,7 @@
       </div>
 
       <div class="content container">
+        <h1 class="mb-4">Settings</h1>
         <div class="form-group">
 
           <label>
@@ -80,7 +81,7 @@ export default Settings
     left: 0;
     background: rgba(0,0,0,.95);
     .content {
-      margin-top: 10vh;
+      margin-top: 4vh;
     }
   }
   .vue-slider-dot {
