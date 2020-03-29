@@ -24,21 +24,8 @@ export class LobbyUser {
   }
 
   get color(): string {
-    return this.CustomColor();
-  }
-
-  CustomColor(): string {
-    
-     if (this.user.name == "eloff")
-       return "#7B5804"
-     else if (this.user.name === "dux")
-       return "#FA8072";
-     else
-    console.log(this._color);
     return this._color
   }
-
-
 
   get isOwner(): boolean {
     return this._isOwner
