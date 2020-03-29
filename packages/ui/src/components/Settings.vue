@@ -1,9 +1,29 @@
 <template>
   <div class="d-flex">
     <div v-if="!open" class="ml-auto d-flex">
-      <div @click="open = true" class="align-self-center" style="cursor: pointer;">
-        <span class="material-icons" style="font-size: 2rem;">tune</span>
-      </div>
+      <v-popover
+        trigger="manual"
+        :open="showSettingsTutorial"
+        offset="16"
+        placement="bottom"
+        :auto-hide="false"
+      >
+        <template v-slot:popover>
+          <div @click="shownSettingsTutorial" class="tutorial">
+            <div class="close-tutorial" style="left: 0; right: auto;">
+              <span class="material-icons">close</span>
+
+            </div>
+            <div style="top: 1rem; right: 1rem;position: absolute;">
+              <span class="material-icons">call_made</span>
+            </div>
+            click the settings icon to change the game volume
+          </div>
+        </template>
+        <div @click="open = true" class="align-self-center" style="cursor: pointer;">
+          <span class="material-icons" style="font-size: 2rem;">tune</span>
+        </div>
+      </v-popover>
     </div>
     <div v-else class="settings">
       <div @click="open = false" class="close">
@@ -81,6 +101,9 @@ class Settings extends Vue {
 
   @SettingsStore.State notificationVolume!: number
   @SettingsStore.Mutation setNotificationVolume!: (v: number) => void
+
+  @SettingsStore.State showSettingsTutorial!: number
+  @SettingsStore.Mutation shownSettingsTutorial!: () => void
 
 }
 

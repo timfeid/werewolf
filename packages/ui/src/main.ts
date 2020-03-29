@@ -6,10 +6,13 @@ import socket from './socket'
 import store from './store'
 // @ts-ignore
 import VueConfetti from 'vue-confetti'
+import VTooltip from 'v-tooltip'
+
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
 Vue.use(VueConfetti)
+Vue.use(VTooltip)
 
 const app = new Vue({
   router,

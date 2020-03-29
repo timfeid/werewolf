@@ -7,12 +7,16 @@ type SettingsStore = {
   musicVolume: number
   voiceVolume: number
   notificationVolume: number
+  showKeeperTutorial: boolean
+  showSettingsTutorial: boolean
 }
 
 export const state: SettingsStore = {
   musicVolume: parseInt(localStorage['music-volume'] || '25', 10),
   voiceVolume: parseInt(localStorage['voice-volume'] || '75', 10),
   notificationVolume: parseInt(localStorage['notification-volume'] || '75', 10),
+  showKeeperTutorial: !(!!localStorage['shown-keeper-tutorial']),
+  showSettingsTutorial: !(!!localStorage['shown-settings-tutorial']),
 }
 
 const getters: GetterTree<SettingsStore, RootState> = {
@@ -37,6 +41,16 @@ const mutations: MutationTree<SettingsStore> = {
   setNotificationVolume(state, volume: number) {
     localStorage.setItem('notification-volume', volume.toString())
     state.notificationVolume = volume
+  },
+
+  shownKeeperTutorial(state) {
+    localStorage.setItem('shown-keeper-tutorial', 'true')
+    state.showKeeperTutorial = false
+  },
+
+  shownSettingsTutorial(state) {
+    localStorage.setItem('shown-settings-tutorial', 'true')
+    state.showSettingsTutorial = false
   },
 
 }

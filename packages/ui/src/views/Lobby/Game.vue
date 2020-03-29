@@ -60,8 +60,37 @@
       </ul>
     </div>
 
-    <div class="keeper-text" :class="{ 'keeper-text--show': showKeeperText }" v-html="keeperText" @click="showKeeperText = !showKeeperText" />
-    <div class="keeper-text-helper" @click="showKeeperText = !showKeeperText" v-if="!showKeeperText"><span class="d-inline d-md-none">tap</span> <span class="d-none d-md-inline">click</span> to show info</div>
+
+      <div class="keeper-text" @click="showKeeperText = !showKeeperText">
+        <v-popover
+          trigger="manual"
+          :open="showKeeperTutorial"
+          offset="16"
+          placement="top"
+          :auto-hide="false"
+        >
+          <template v-slot:popover>
+            <div @click="shownKeeperTutorial" class="tutorial">
+              <div class="close-tutorial">
+                <span class="material-icons">close</span>
+
+              </div>
+              click the black bar below to hide or show information!
+              <div class="text-center">
+
+                <span class="material-icons">arrow_downward</span>
+              </div>
+            </div>
+          </template>
+          <div v-if="!showKeeperText">
+            <span class="d-inline d-md-none">tap</span> <span class="d-none d-md-inline">click</span> to show info
+          </div>
+          <div v-else>
+            {{ keeperText }}
+          </div>
+        </v-popover>
+      </div>
+
 
     <div class="mt-3" v-if="owner">
       <button v-if="!lobby.started" @click="start" class="btn w-100 text-lowercase btn-outline-secondary">
@@ -132,6 +161,8 @@ class Game extends Vue {
   @SettingsStore.State musicVolume!: number
   @SettingsStore.State voiceVolume!: number
   @SettingsStore.State notificationVolume!: number
+  @SettingsStore.State showKeeperTutorial!: boolean
+  @SettingsStore.Mutation shownKeeperTutorial!: () => void
   @UserStore.Getter id!: string
 
   data: Record<string, any> = {}
@@ -316,10 +347,7 @@ export default Game
     text-align: center;
     padding: 1rem;
     background: black;
-    color: black;
-    &--show {
-      color: #eaeaea;
-    }
+    color: #eaeaea;
     &-helper {
       bottom: 0;
       user-select: none;
