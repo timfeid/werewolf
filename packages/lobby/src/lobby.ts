@@ -8,7 +8,6 @@ import { TroublemakerCard } from '../../werewolf/src/cards/troublemaker'
 import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { LobbyUser } from './user'
-import { boolean } from 'joi'
 
 
 
