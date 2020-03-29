@@ -10,15 +10,14 @@
         @selected="selected"
       />
       <div>or one of</div>
-      <div class="d-flex flex-row justify-content-center">
+      <div class="d-flex flex-row justify-content-center justify-content-center">
         <player v-for="player of playersBesideMe" :key="player.id" @click.native="selectedPlayer(player)" :player="player" style="cursor: pointer;" />
       </div>
     </div>
     <div v-if="cards">
       The cards you viewed were
-      <div v-for="card in cards">
-
-        {{ card.name }}
+      <div class="d-flex align-items-center">
+        <card-image v-for="card in cards" :card="card" />
       </div>
     </div>
 
@@ -36,11 +35,13 @@ import { Card } from '../../../store/cards/types'
 import Middle from '@/components/Middle.vue'
 import Player, {Player as PlayerType} from '../../../components/Player.vue'
 import axios from '../../../axios'
+import CardImage from '@/components/CardImage.vue'
 
 @Component({
   components: {
     Middle,
     Player,
+    CardImage,
   }
 })
 class SeerTurn extends TurnMixin {

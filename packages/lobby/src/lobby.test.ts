@@ -22,7 +22,7 @@ describe('lobby', () => {
 
   it('can start with valid cards + players', async () => {
     const owner = {id: 'laskdmsjndbf', name: 'owner'}
-    const users = [{ id: 'sdaf', name: 'user1' }, { id: 'sdax', name: 'user2' }]
+    const users = [{ id: 'sdaf', name: 'asfasf' }, { id: 'sdax', name: 'user2' }]
     const lobby = new Lobby('random')
     lobby.addUser(owner, true)
 
@@ -42,7 +42,7 @@ describe('lobby', () => {
 
   it('starts the game correctly', async () => {
     const owner = { id: 'laskdmsjndbf', name: 'owner' }
-    const users = [{ id: 'sdaf', name: 'user1' }, { id: 'sdax', name: 'user2' }]
+    const users = [{ id: 'sdaf', name: 'asfffasf' }, { id: 'sdax', name: 'user2' }]
     lobby = new Lobby('random')
     lobby.addUser(owner, true)
 

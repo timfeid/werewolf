@@ -6,7 +6,13 @@
       <player v-for="user in lobby.users" :key="user.id" :player="user" />
     </div>
     <div class="mt-3" v-if="owner">
-      <button @click="deal" class="w-100 btn btn-primary text-lowercase">
+      <ul v-if="errors.length > 0">
+
+        <li class="text-danger" v-for="error in errors">
+          {{ error }}
+        </li>
+      </ul>
+      <button @click="deal" class="w-100 btn btn-primary text-lowercase alt-font">
         Deal
       </button>
     </div>
@@ -44,6 +50,8 @@ class Setup extends Vue {
   @Prop({required: true, type: Boolean})
   owner!: boolean
 
+  errors: string[] = []
+
   get joined () {
     if (!this.lobby) {
       return false
@@ -56,7 +64,12 @@ class Setup extends Vue {
   }
 
   async deal () {
-    await axios.post(`/lobbies/${this.lobby.id}/deal`)
+    try {
+
+      await axios.post(`/lobbies/${this.lobby.id}/deal`)
+    } catch (e) {
+      this.errors = e.response.data.data.errors
+    }
   }
 
 }

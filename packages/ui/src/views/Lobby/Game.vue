@@ -9,7 +9,7 @@
     <audio ref="notification">
       <source :src="require(`@/assets/sound/accomplished.mp3`)" type="audio/ogg">
     </audio>
-    <audio ref="audio" autoplay="true">
+    <audio ref="audio" autoplay="true" loop>
       <source :src="require(`@/assets/sound/background_tense.mp3`)" type="audio/ogg">
     </audio>
     <audio ref="winner">
@@ -32,27 +32,65 @@
       <h1 class="text-center">{{ winner }} win!</h1>
       <ul class="list-group">
         <li class="list-group-item d-flex" v-for="obj in finalUserCards" :class="{lynched: highestVotedPlayer.id === obj.id}">
-          <div>
-            {{ obj.name }} was a <span class="badge badge-secondary">{{ obj.card.name }}</span>
+          <div class="d-flex align-items-center mr-3" style="flex-grow: 1;">
+            <player :player="obj" />
+            <div class="ml-auto">
+             {{ obj.card.name }} <span class="badge badge-danger d-block" v-if="obj.card.isWerewolf">Werewolf</span>
+            </div>
+            <div class="player ml-auto">
+              <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.card.id}" />
+            </div>
           </div>
-          <div class="ml-auto">
+          <div class="ml-auto my-auto">
             <span class="badge badge-info">{{ votesFor(obj.id) }} votes</span>
           </div>
         </li>
-        <li class="list-group-item d-flex" v-for="(obj, index) in finalMiddleCards" :class="{lynched: highestVotedPlayer.id === 'middle'}">
-          <div>
-
-            Middle {{index+1}} was a <span class="badge badge-secondary">{{ obj.name }}</span>
-          </div>
+        <li class="list-group-item d-flex align-items-center" v-for="(obj, index) in finalMiddleCards" :class="{lynched: highestVotedPlayer.id === 'middle'}">
+          <player :player="{name: 'Middle '+(index+1), color: '#ffffff'}" />
           <div class="ml-auto">
+            {{ obj.name }} <span class="badge badge-danger d-block" v-if="obj.isWerewolf">Werewolf</span>
+          </div>
+          <div class="player ml-auto mr-3">
+            <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.id}" />
+          </div>
+          <div>
             <span class="badge badge-info">{{ votesFor('middle') }} votes</span>
           </div>
         </li>
       </ul>
     </div>
 
-    <div class="keeper-text" :class="{ 'keeper-text--show': showKeeperText }" v-html="keeperText" @click="showKeeperText = !showKeeperText" />
-    <div class="keeper-text-helper" @click="showKeeperText = !showKeeperText" v-if="!showKeeperText">tap to show info</div>
+
+      <div class="keeper-text" @click="showKeeperText = !showKeeperText">
+        <v-popover
+          trigger="manual"
+          :open="showKeeperTutorial"
+          offset="16"
+          placement="top"
+          :auto-hide="false"
+        >
+          <template v-slot:popover>
+            <div @click="shownKeeperTutorial" class="tutorial">
+              <div class="close-tutorial">
+                <span class="material-icons">close</span>
+
+              </div>
+              click the black bar below to hide or show information!
+              <div class="text-center">
+
+                <span class="material-icons">arrow_downward</span>
+              </div>
+            </div>
+          </template>
+          <div v-if="!showKeeperText">
+            <span class="d-inline d-md-none">tap</span> <span class="d-none d-md-inline">click</span> to show info
+          </div>
+          <div v-else>
+            {{ keeperText }}
+          </div>
+        </v-popover>
+      </div>
+
 
     <div class="mt-3" v-if="owner">
       <button v-if="!lobby.started" @click="start" class="btn w-100 text-lowercase btn-outline-secondary">
@@ -85,7 +123,7 @@ import Drunk from './Turns/Drunk.vue'
 import Copycat from './Turns/Copycat.vue'
 import Insomniac from './Turns/Insomniac.vue'
 import Doppelganger from './Turns/Doppelganger.vue'
-import { Player } from '../../components/Player.vue'
+import Player from '../../components/Player.vue'
 import Vote from './Vote.vue'
 import {namespace} from 'vuex-class'
 
@@ -101,6 +139,7 @@ const UserStore = namespace('user')
     Mason,
     Seer,
     Vote,
+    Player,
     Robber,
     Troublemaker,
     Drunk,
@@ -121,6 +160,9 @@ class Game extends Vue {
 
   @SettingsStore.State musicVolume!: number
   @SettingsStore.State voiceVolume!: number
+  @SettingsStore.State notificationVolume!: number
+  @SettingsStore.State showKeeperTutorial!: boolean
+  @SettingsStore.Mutation shownKeeperTutorial!: () => void
   @UserStore.Getter id!: string
 
   data: Record<string, any> = {}
@@ -135,7 +177,7 @@ class Game extends Vue {
 
   myTurn = false
 
-  showKeeperText = false
+  showKeeperText = true
 
   finished = false
 
@@ -146,12 +188,21 @@ class Game extends Vue {
     this.setMusicVolume()
   }
 
+  showConfetti () {
+    // @ts-ignore
+    this.$confetti.start()
+    setTimeout(() => {
+      // @ts-ignore
+      this.$confetti.stop()
+    }, 3000);
+  }
+
   @Watch('card')
   @Watch('musicVolume')
   @Watch('voiceVolume')
   setMusicVolume () {
     (this.$refs['audio'] as HTMLAudioElement).volume = this.musicVolume / 100;
-    (this.$refs['notification'] as HTMLAudioElement).volume = this.voiceVolume / 100;
+    (this.$refs['notification'] as HTMLAudioElement).volume = this.notificationVolume / 100;
     (this.$refs['winner'] as HTMLAudioElement).volume = this.musicVolume / 100;
     (this.$refs['loser'] as HTMLAudioElement).volume = this.musicVolume / 100;
 
@@ -200,6 +251,7 @@ class Game extends Vue {
   playFinalSound () {
     let finalSound = 'loser'
     const myFinal = this.finalUserCards.find(u => u.id === this.id)
+    console.log(myFinal.card, myFinal.card.isWerewolf, this.winner)
     if ((myFinal.card.isWerewolf || myFinal.card.id === 'MinionCard') && this.winner === 'Werewolves') {
       finalSound = 'winner'
     } else if (!myFinal.card.isWerewolf && myFinal.card.id !== 'MinionCard' && this.winner === 'Villagers') {
@@ -208,8 +260,9 @@ class Game extends Vue {
 
     (this.$refs[finalSound] as HTMLAudioElement).play()
 
-
-
+    if (finalSound === 'winner') {
+      this.showConfetti()
+    }
   }
 
   created () {
@@ -270,7 +323,6 @@ class Game extends Vue {
   setKeeperText (text: string) {
     this.keeperText = text
     this.showKeeperText = true
-    setTimeout(() => this.showKeeperText = false, 5000)
   }
 }
 export default Game
@@ -295,10 +347,7 @@ export default Game
     text-align: center;
     padding: 1rem;
     background: black;
-    color: black;
-    &--show {
-      color: #eaeaea;
-    }
+    color: #eaeaea;
     &-helper {
       bottom: 0;
       user-select: none;

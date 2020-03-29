@@ -52,8 +52,11 @@ export class LobbyController {
     const lobby = Lobbies.get(ctx.params.id)
     ctx.assert(lobby.owner.user.id === ctx.user.id, 401)
 
+    const data = lobby.deal()
+
+    ctx.status = data.success ? 200 : 400
     ctx.body = {
-      data: lobby.deal()
+      data,
     }
   }
 
@@ -148,7 +151,6 @@ export class LobbyController {
     ctx.assert(currentTurn, 401)
     ctx.assert(currentTurn.name === card.id || (card.isWerewolf && currentTurn.name === WerewolfCard.name) || (card.id === CopycatCard.name && user.copycat && currentTurn.name === user.copycat.constructor.name), 401)
     const currentTurnName = (currentTurn.name === DoppelgangerCard.name && user.doppelganger) ? user.doppelganger.constructor.name : currentTurn.name
-    console.log(currentTurnName)
 
     switch (currentTurnName) {
       case CopycatCard.name:

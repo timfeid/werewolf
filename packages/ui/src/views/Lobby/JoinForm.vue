@@ -46,10 +46,13 @@ class JoinForm extends Vue {
 
   async joinLobby () {
     const code = this.code.toUpperCase()
-    const response = await axios.post(`/lobbies/${code}/join`)
-    if (response.status === 200) {
+    try {
+      const response = await axios.post(`/lobbies/${code}/join`)
       this.$emit('joined', response.data.data)
+    } catch (e) {
+
     }
+    this.$router.push({name: 'lobby', params: {id: code}})
   }
 }
 

@@ -3,7 +3,7 @@
     <header>
       <div class="header-container">
         <div class="container">
-          <h1 class="text-center text-lowercase w-100">
+          <h1 class="text-center text-lowercase w-100 alt-font">
             Werewolf
           </h1>
 
@@ -51,7 +51,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
 @import "~material-icons/iconfont/material-icons.scss";
 
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Neucha", "Avenir", Helvetica, Arial, sans-serif;
   height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
@@ -67,6 +67,14 @@ $header-height: 75px;
   height: 3rem;
 }
 
+.btn {
+  font-size: 1rem;
+}
+
+.alt-font {
+  font-family: "Shadows Into Light", "Avenir", Helvetica, Arial, sans-serif;
+}
+
 .main-content {
   flex-grow: 1;
 }
@@ -75,5 +83,118 @@ $header-height: 75px;
   margin-top: 1rem;
   background: #e5f8fc;
   padding: 5rem 0;
+}
+
+.tooltip {
+  font-family: "Neucha", "Avenir", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  display: block !important;
+  z-index: 10000;
+
+  .tooltip-info {
+    max-width: 300px;
+  }
+
+  .tooltip-inner {
+    background: black;
+    color: white;
+    border-radius: 16px;
+    padding: 5px 10px 4px;
+  }
+
+  .tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+    border-color: black;
+  }
+
+  &[x-placement^="top"] {
+    margin-bottom: 5px;
+
+    .tooltip-arrow {
+      border-width: 5px 5px 0 5px;
+      border-left-color: transparent !important;
+      border-right-color: transparent !important;
+      border-bottom-color: transparent !important;
+      bottom: -5px;
+      left: calc(50% - 5px);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  &[x-placement^="bottom"] {
+    margin-top: 5px;
+
+    .tooltip-arrow {
+      border-width: 0 5px 5px 5px;
+      border-left-color: transparent !important;
+      border-right-color: transparent !important;
+      border-top-color: transparent !important;
+      top: -5px;
+      left: calc(50% - 5px);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  &[x-placement^="right"] {
+    margin-left: 5px;
+
+    .tooltip-arrow {
+      border-width: 5px 5px 5px 0;
+      border-left-color: transparent !important;
+      border-top-color: transparent !important;
+      border-bottom-color: transparent !important;
+      left: -5px;
+      top: calc(50% - 5px);
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  &[x-placement^="left"] {
+    margin-right: 5px;
+
+    .tooltip-arrow {
+      border-width: 5px 0 5px 5px;
+      border-top-color: transparent !important;
+      border-right-color: transparent !important;
+      border-bottom-color: transparent !important;
+      right: -5px;
+      top: calc(50% - 5px);
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  &[aria-hidden='true'] {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .15s, visibility .15s;
+  }
+
+  &[aria-hidden='false'] {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .15s;
+  }
+}
+
+
+.tutorial {
+  max-width: 300px;
+  text-align: center;
+  padding: 1rem 3rem;
+  position: relative;
+  .close-tutorial {
+    top: 1rem;
+    right: 0;
+    position: absolute;
+    cursor: pointer;
+  }
 }
 </style>

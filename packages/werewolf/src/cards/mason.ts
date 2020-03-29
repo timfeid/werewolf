@@ -7,7 +7,13 @@ export class MasonCard extends Card {
   }
 
   get description() {
-    return 'Mason'
+    return `<p>When using the Masons always
+put both Masons in the game.</p><p>
+The Mason wakes up at night and
+looks for the other Mason. If the
+Mason doesn’t see another Mason,
+it means the other Mason card is in
+the center.</p><p><strong> Masons are on the village team.</strong></p>`
   }
 
   get turnLength () {
