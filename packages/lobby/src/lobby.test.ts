@@ -27,8 +27,8 @@ describe('lobby', () => {
     lobby.addUser(userEloff, true)
     lobby.addUser(userDux, true)
 
-    expect(lobby.users[0].color).eq("#7B5804")
-    expect(lobby.users[1].color).eq("#FA8072")
+    expect(lobby.users[0].color).eq('#7B5804')
+    expect(lobby.users[1].color).eq('#FA8072')
   })
 
   it('can start with valid cards + players', async () => {
