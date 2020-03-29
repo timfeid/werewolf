@@ -9,7 +9,7 @@
     <audio ref="notification">
       <source :src="require(`@/assets/sound/accomplished.mp3`)" type="audio/ogg">
     </audio>
-    <audio ref="audio" autoplay="true">
+    <audio ref="audio" autoplay="true" loop>
       <source :src="require(`@/assets/sound/background_tense.mp3`)" type="audio/ogg">
     </audio>
     <audio ref="winner">
