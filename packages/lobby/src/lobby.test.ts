@@ -20,6 +20,17 @@ describe('lobby', () => {
     expect(lobby.owner.user).to.have.property('id').eq(user.id)
   })
 
+  it('its changes colors for dux and eloff usernames', async () => {
+    const userEloff = {id: 'eeee', name: 'eloff'}
+    const userDux = {id: 'bbbb', name: 'dux'}
+    const lobby = new Lobby('random')
+    lobby.addUser(userEloff, true)
+    lobby.addUser(userDux, true)
+
+    expect(lobby.users[0].color).eq("#7B5804")
+    expect(lobby.users[1].color).eq("#FA8072")
+  })
+
   it('can start with valid cards + players', async () => {
     const owner = {id: 'laskdmsjndbf', name: 'owner'}
     const users = [{ id: 'sdaf', name: 'asfasf' }, { id: 'sdax', name: 'user2' }]

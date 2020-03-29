@@ -8,6 +8,7 @@ import { TroublemakerCard } from '../../werewolf/src/cards/troublemaker'
 import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { LobbyUser } from './user'
+import { boolean } from 'joi'
 
 
 
@@ -88,7 +89,8 @@ export class Lobby extends EventEmitter {
     }
 
     if (!this._users.find(u => u.user.id === user.id)) {
-      const u = new LobbyUser(user, this.remainingColors.pop(), isOwner)
+
+      const u = new LobbyUser(user, this.getCustomColor(user.name), isOwner)
       this._users.push(u)
       this.emit('joined', u)
     }
@@ -168,6 +170,12 @@ export class Lobby extends EventEmitter {
       success: this.isValid,
       errors: this.validation.errors.map(e => e.message),
     }
+  }
+
+  getCustomColor(username: string) {
+    if(username === "dux") return "#FA8072";
+    else if (username === "eloff") return "#7B5804";
+    else return this.remainingColors.pop();
   }
 
   start () {
