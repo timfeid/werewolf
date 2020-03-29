@@ -13,7 +13,7 @@ export class LobbyUser {
   protected _claim: Card
   protected _color: string
 
-  constructor (user: User, color: string, isOwner = false) {
+  constructor(user: User, color: string, isOwner = false) {
     this._isOwner = isOwner
     this._color = color
     this._user = user
@@ -24,18 +24,31 @@ export class LobbyUser {
   }
 
   get color(): string {
+    return this.CustomColor();
+  }
+
+  CustomColor(): string {
+    
+     if (this.user.name == "eloff")
+       return "#7B5804"
+     else if (this.user.name === "dux")
+       return "#FA8072";
+     else
+    console.log(this._color);
     return this._color
   }
 
-  get isOwner (): boolean {
+
+
+  get isOwner(): boolean {
     return this._isOwner
   }
 
-  get card (): Card {
+  get card(): Card {
     return this._card
   }
 
-  set card (card: Card) {
+  set card(card: Card) {
     this._card = card
     if (!this._originalCard) {
       this._originalCard = card
@@ -82,7 +95,7 @@ export class LobbyUser {
     return this._originalCard
   }
 
-  toObject () {
+  toObject() {
     return {
       name: this.user.name,
       id: this.user.id,
