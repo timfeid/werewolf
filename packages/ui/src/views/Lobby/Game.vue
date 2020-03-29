@@ -146,6 +146,15 @@ class Game extends Vue {
     this.setMusicVolume()
   }
 
+  showConfetti () {
+    // @ts-ignore
+    this.$confetti.start()
+    setTimeout(() => {
+      // @ts-ignore
+      this.$confetti.stop()
+    }, 3000);
+  }
+
   @Watch('card')
   @Watch('musicVolume')
   @Watch('voiceVolume')
@@ -208,8 +217,9 @@ class Game extends Vue {
 
     (this.$refs[finalSound] as HTMLAudioElement).play()
 
-
-
+    if (finalSound === 'winner') {
+      this.showConfetti()
+    }
   }
 
   created () {

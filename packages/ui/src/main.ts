@@ -4,9 +4,12 @@ import App from './App.vue'
 import router from './router'
 import socket from './socket'
 import store from './store'
+// @ts-ignore
+import VueConfetti from 'vue-confetti'
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
+Vue.use(VueConfetti)
 
 const app = new Vue({
   router,
