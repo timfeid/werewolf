@@ -6,11 +6,13 @@ const namespaced = true
 type SettingsStore = {
   musicVolume: number
   voiceVolume: number
+  notificationVolume: number
 }
 
 export const state: SettingsStore = {
   musicVolume: parseInt(localStorage['music-volume'] || '25', 10),
   voiceVolume: parseInt(localStorage['voice-volume'] || '75', 10),
+  notificationVolume: parseInt(localStorage['notification-volume'] || '75', 10),
 }
 
 const getters: GetterTree<SettingsStore, RootState> = {
@@ -30,6 +32,11 @@ const mutations: MutationTree<SettingsStore> = {
   setVoiceVolume(state, volume: number) {
     localStorage.setItem('voice-volume', volume.toString())
     state.voiceVolume = volume
+  },
+
+  setNotificationVolume(state, volume: number) {
+    localStorage.setItem('notification-volume', volume.toString())
+    state.notificationVolume = volume
   },
 
 }

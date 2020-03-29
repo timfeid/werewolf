@@ -131,6 +131,7 @@ class Game extends Vue {
 
   @SettingsStore.State musicVolume!: number
   @SettingsStore.State voiceVolume!: number
+  @SettingsStore.State notificationVolume!: number
   @UserStore.Getter id!: string
 
   data: Record<string, any> = {}
@@ -170,7 +171,7 @@ class Game extends Vue {
   @Watch('voiceVolume')
   setMusicVolume () {
     (this.$refs['audio'] as HTMLAudioElement).volume = this.musicVolume / 100;
-    (this.$refs['notification'] as HTMLAudioElement).volume = this.voiceVolume / 100;
+    (this.$refs['notification'] as HTMLAudioElement).volume = this.notificationVolume / 100;
     (this.$refs['winner'] as HTMLAudioElement).volume = this.musicVolume / 100;
     (this.$refs['loser'] as HTMLAudioElement).volume = this.musicVolume / 100;
 

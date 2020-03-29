@@ -38,6 +38,19 @@
             drag-on-click
           />
         </div>
+        <div class="form-group">
+
+          <label>
+            Notification volume
+          </label>
+          <vue-slider
+            :value="notificationVolume"
+            @change="setNotificationVolume"
+            dot-size="20"
+            height="10px"
+            drag-on-click
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -65,6 +78,9 @@ class Settings extends Vue {
 
   @SettingsStore.State voiceVolume!: number
   @SettingsStore.Mutation setVoiceVolume!: (v: number) => void
+
+  @SettingsStore.State notificationVolume!: number
+  @SettingsStore.Mutation setNotificationVolume!: (v: number) => void
 
 }
 
