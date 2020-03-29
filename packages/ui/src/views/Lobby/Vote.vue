@@ -19,10 +19,17 @@
     <div class="votes">
       <ul class="list-group">
         <li class="list-group-item d-flex" v-for="user in lobby.users">
-          <div style="line-height: 26px">
-            {{ user.name }} <span class="badge badge-secondary d-inline">&quot;{{ user.claim ? user.claim.name : 'Villager' }}&quot;</span>
+          <div class="d-flex align-items-center" style="flex-grow: 1;">
+
+            <player :player="user" />
+
+            <span class="mx-auto">&quot;{{ user.claim ? user.claim.name : 'Villager' }}&quot;</span>
+
+            <div class="player mr-3">
+              <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="user.claim ? {id: user.claim.id} : {id: 'VillagerCard'}" />
+            </div>
           </div>
-          <div class="ml-auto">
+          <div class="ml-auto my-auto">
 
             <div class="badge badge-primary mr-1">
               {{ votesFor(user.id) }} votes
@@ -33,9 +40,9 @@
 
         <li class="list-group-item d-flex">
           <div style="line-height: 26px">
-            Middle
+            <player :player="{color: '#ffffff', name: 'Middle'}" />
           </div>
-          <div class="ml-auto">
+          <div class="ml-auto my-auto">
             <div class="badge badge-primary mr-1">
               {{ votesFor('middle') }} votes
             </div>
@@ -71,11 +78,12 @@ import Robber from './Turns/Robber.vue'
 import Troublemaker from './Turns/Troublemaker.vue'
 import Drunk from './Turns/Drunk.vue'
 import Insomniac from './Turns/Insomniac.vue'
-import { Player } from '../../components/Player.vue'
+import Player from '../../components/Player.vue'
 
 @Component({
   components: {
     CardImage,
+    Player,
   }
 })
 class Vote extends Vue {

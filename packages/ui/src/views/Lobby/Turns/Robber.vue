@@ -6,7 +6,7 @@
     <div v-if="newCard">
       Your new card is
 
-      {{ newCard.name }}
+      <card-image class="mx-auto" :card="newCard" />
     </div>
 
 
@@ -23,11 +23,13 @@ import { Card } from '../../../store/cards/types'
 import Middle from '@/components/Middle.vue'
 import Player, {Player as PlayerType} from '../../../components/Player.vue'
 import axios from '../../../axios'
+import CardImage from '@/components/CardImage.vue'
 
 @Component({
   components: {
     Middle,
     Player,
+    CardImage,
   }
 })
 class RobberTurn extends TurnMixin {

@@ -32,19 +32,28 @@
       <h1 class="text-center">{{ winner }} win!</h1>
       <ul class="list-group">
         <li class="list-group-item d-flex" v-for="obj in finalUserCards" :class="{lynched: highestVotedPlayer.id === obj.id}">
-          <div>
-            {{ obj.name }} was a <span class="badge badge-secondary">{{ obj.card.name }}</span>
+          <div class="d-flex align-items-center mr-3" style="flex-grow: 1;">
+            <player :player="obj" />
+            <div class="ml-auto">
+             {{ obj.card.name }} <span class="badge badge-danger d-block" v-if="obj.card.isWerewolf">Werewolf</span>
+            </div>
+            <div class="player ml-auto">
+              <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.card.id}" />
+            </div>
           </div>
-          <div class="ml-auto">
+          <div class="ml-auto my-auto">
             <span class="badge badge-info">{{ votesFor(obj.id) }} votes</span>
           </div>
         </li>
-        <li class="list-group-item d-flex" v-for="(obj, index) in finalMiddleCards" :class="{lynched: highestVotedPlayer.id === 'middle'}">
-          <div>
-
-            Middle {{index+1}} was a <span class="badge badge-secondary">{{ obj.name }}</span>
-          </div>
+        <li class="list-group-item d-flex align-items-center" v-for="(obj, index) in finalMiddleCards" :class="{lynched: highestVotedPlayer.id === 'middle'}">
+          <player :player="{name: 'Middle '+(index+1), color: '#ffffff'}" />
           <div class="ml-auto">
+            {{ obj.name }} <span class="badge badge-danger d-block" v-if="obj.isWerewolf">Werewolf</span>
+          </div>
+          <div class="player ml-auto mr-3">
+            <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.id}" />
+          </div>
+          <div>
             <span class="badge badge-info">{{ votesFor('middle') }} votes</span>
           </div>
         </li>
@@ -52,7 +61,7 @@
     </div>
 
     <div class="keeper-text" :class="{ 'keeper-text--show': showKeeperText }" v-html="keeperText" @click="showKeeperText = !showKeeperText" />
-    <div class="keeper-text-helper" @click="showKeeperText = !showKeeperText" v-if="!showKeeperText">tap to show info</div>
+    <div class="keeper-text-helper" @click="showKeeperText = !showKeeperText" v-if="!showKeeperText"><span class="d-inline d-md-none">tap</span> <span class="d-none d-md-inline">click</span> to show info</div>
 
     <div class="mt-3" v-if="owner">
       <button v-if="!lobby.started" @click="start" class="btn w-100 text-lowercase btn-outline-secondary">
@@ -85,7 +94,7 @@ import Drunk from './Turns/Drunk.vue'
 import Copycat from './Turns/Copycat.vue'
 import Insomniac from './Turns/Insomniac.vue'
 import Doppelganger from './Turns/Doppelganger.vue'
-import { Player } from '../../components/Player.vue'
+import Player from '../../components/Player.vue'
 import Vote from './Vote.vue'
 import {namespace} from 'vuex-class'
 
@@ -101,6 +110,7 @@ const UserStore = namespace('user')
     Mason,
     Seer,
     Vote,
+    Player,
     Robber,
     Troublemaker,
     Drunk,
@@ -135,7 +145,7 @@ class Game extends Vue {
 
   myTurn = false
 
-  showKeeperText = false
+  showKeeperText = true
 
   finished = false
 
@@ -209,6 +219,7 @@ class Game extends Vue {
   playFinalSound () {
     let finalSound = 'loser'
     const myFinal = this.finalUserCards.find(u => u.id === this.id)
+    console.log(myFinal.card, myFinal.card.isWerewolf, this.winner)
     if ((myFinal.card.isWerewolf || myFinal.card.id === 'MinionCard') && this.winner === 'Werewolves') {
       finalSound = 'winner'
     } else if (!myFinal.card.isWerewolf && myFinal.card.id !== 'MinionCard' && this.winner === 'Villagers') {
@@ -280,7 +291,6 @@ class Game extends Vue {
   setKeeperText (text: string) {
     this.keeperText = text
     this.showKeeperText = true
-    setTimeout(() => this.showKeeperText = false, 5000)
   }
 }
 export default Game

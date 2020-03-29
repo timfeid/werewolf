@@ -148,7 +148,6 @@ export class LobbyController {
     ctx.assert(currentTurn, 401)
     ctx.assert(currentTurn.name === card.id || (card.isWerewolf && currentTurn.name === WerewolfCard.name) || (card.id === CopycatCard.name && user.copycat && currentTurn.name === user.copycat.constructor.name), 401)
     const currentTurnName = (currentTurn.name === DoppelgangerCard.name && user.doppelganger) ? user.doppelganger.constructor.name : currentTurn.name
-    console.log(currentTurnName)
 
     switch (currentTurnName) {
       case CopycatCard.name:

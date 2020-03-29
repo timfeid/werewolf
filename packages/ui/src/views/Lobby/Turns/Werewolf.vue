@@ -8,8 +8,8 @@
         @selected="selected"
       />
       <div v-if="middleCard">
-        The card you selected was
-        {{ middleCard.name }}
+        The middle card ({{ selectedCard }}) you selected was
+        <card-image class="mx-auto" :card="middleCard" />
       </div>
     </div>
     <div v-else>
@@ -32,28 +32,32 @@ import { Card } from '../../../store/cards/types'
 import Middle from '@/components/Middle.vue'
 import Player from '@/components/Player.vue'
 import axios from '../../../axios'
+import CardImage from '@/components/CardImage.vue'
 
 @Component({
   components: {
     Middle,
     Player,
+    CardImage,
   }
 })
 class WerewolfTurn extends TurnMixin {
   selecting = true
   middleCard: Card | null = null
+  selectedCard?: string
 
   mounted () {
     this.$emit('keeper-text', `wolves: ${this.data.werewolves.map((w: any) => w.name).join(', ')}`)
   }
 
   async selected (card: string[]) {
+    this.selectedCard = card[0]
     this.selecting = false
     const response = await axios.post(`/lobbies/${this.lobby.id}/turn`, {
       view: card[0],
     })
     this.middleCard = response.data.data
-    this.$emit('keeper-text', `wolves: ${this.data.werewolves.map((w: any) => w.name).join(', ')} middle card: ${response.data.data.name}`)
+    this.$emit('keeper-text', `wolves: ${this.data.werewolves.map((w: any) => w.name).join(', ')} middle card (${this.selectedCard}): ${response.data.data.name}`)
   }
 
   get werewolfCount () {
