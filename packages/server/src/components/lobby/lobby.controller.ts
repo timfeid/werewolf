@@ -52,8 +52,11 @@ export class LobbyController {
     const lobby = Lobbies.get(ctx.params.id)
     ctx.assert(lobby.owner.user.id === ctx.user.id, 401)
 
+    const data = lobby.deal()
+
+    ctx.status = data.success ? 200 : 400
     ctx.body = {
-      data: lobby.deal()
+      data,
     }
   }
 

@@ -3,7 +3,7 @@
     <header>
       <div class="header-container">
         <div class="container">
-          <h1 class="text-center text-lowercase w-100">
+          <h1 class="text-center text-lowercase w-100 alt-font">
             Werewolf
           </h1>
 
@@ -51,7 +51,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
 @import "~material-icons/iconfont/material-icons.scss";
 
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Neucha", "Avenir", Helvetica, Arial, sans-serif;
   height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
@@ -67,6 +67,14 @@ $header-height: 75px;
   height: 3rem;
 }
 
+.btn {
+  font-size: 1rem;
+}
+
+.alt-font {
+  font-family: "Shadows Into Light", "Avenir", Helvetica, Arial, sans-serif;
+}
+
 .main-content {
   flex-grow: 1;
 }
@@ -78,8 +86,14 @@ $header-height: 75px;
 }
 
 .tooltip {
+  font-family: "Neucha", "Avenir", Helvetica, Arial, sans-serif;
+  font-size: 16px;
   display: block !important;
   z-index: 10000;
+
+  .tooltip-info {
+    max-width: 300px;
+  }
 
   .tooltip-inner {
     background: black;
