@@ -1,12 +1,13 @@
 <template>
   <div class="d-flex">
-    <div v-if="!open" class="ml-auto d-flex">
+    <div v-if="!open" class="ml-auto d-flex settings-tutorial-box">
       <v-popover
         trigger="manual"
         :open="showSettingsTutorial"
         offset="16"
         placement="bottom"
         :auto-hide="false"
+        popover-class="settings-tutorial-box"
       >
         <template v-slot:popover>
           <div @click="shownSettingsTutorial" class="tutorial">
@@ -137,6 +138,12 @@ export default Settings
 
   .vue-slider-process {
     background-color: #7A8288;
+  }
+
+  .settings-tutorial-box {
+    .tooltip-inner {
+      top: -3rem;
+    }
   }
 
   .close {

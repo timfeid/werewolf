@@ -1,12 +1,18 @@
 <template>
-  <div class="card-container">
-    <div class="card-holder mx-auto">
-      <div :class="`card card-${card.id}`" />
+  <v-popover trigger="hover" placement="bottom">
+    <template v-slot:popover>
+      <h1>{{ card.name }}</h1>
+      <div class="tooltip-info" v-html="card.description" />
+    </template>
+    <div class="card-container">
+      <div class="card-holder mx-auto">
+        <div :class="`card card-${card.id}`" />
+      </div>
+      <div class="card-name">
+        {{ card.name }}
+      </div>
     </div>
-    <div class="card-name">
-      {{ card.name }}
-    </div>
-  </div>
+  </v-popover>
 </template>
 
 <script lang="ts">

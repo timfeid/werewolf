@@ -50,21 +50,42 @@ $material-icons-font-path: '~material-icons/iconfont/';
 @import "scss/main";
 @import "~material-icons/iconfont/material-icons.scss";
 
+$header-height: 3rem;
+$timer-height: 2rem;
+$total-off: $header-height + $timer-height;
+
+
+.timer {
+  position: fixed;
+  top: $header-height;
+  width: 100%;
+  left: 0;
+  text-align: center;
+  height: $timer-height;
+  background: #1e2227;
+}
+
+body,html {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
 #app {
   font-family: "Neucha", "Avenir", Helvetica, Arial, sans-serif;
-  height: calc(100vh - 4rem);
+  height: calc(100vh - 10rem);
   display: flex;
   flex-direction: column;
   overflow: auto;
 }
 
-$header-height: 75px;
 
 .header-container {
   background: #1e2227;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
   margin-bottom: 1rem;
   height: 3rem;
+  position: fixed;
+  width: 100%;
+  top: 0;
 }
 
 .btn {
@@ -92,7 +113,7 @@ $header-height: 75px;
   z-index: 10000;
 
   .tooltip-info {
-    max-width: 300px;
+    max-width: 520px;
   }
 
   .tooltip-inner {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="timer text-center mt-3">
+    <h3 class="timer">
       {{ fmtMSS(juryTimer) }} remaining
     </h3>
     <div class="claim my-3">

@@ -19,7 +19,7 @@
       <source :src="require(`@/assets/sound/aw.mp3`)" type="audio/ogg">
     </audio>
 
-    <h4 class="text-center" v-if="currentTurn">
+    <h4 class="text-center timer" v-if="currentTurn">
       {{ currentTurn.name }} {{ turnTimer }} seconds
     </h4>
 

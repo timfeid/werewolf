@@ -4,18 +4,11 @@
     <div class="d-flex flex-row card-list flex-wrap">
       <template v-for="card of $store.state.cards.cards">
         <div @click="isSelected(card.card, i) ? removeCard(card.card) : addCard(card.card)" v-for="i in card.max">
-          <v-popover trigger="hover" placement="bottom">
-            <template v-slot:popover>
-              <h1>{{ card.card.name }}</h1>
-              <div class="tooltip-info" v-html="card.card.description" />
-            </template>
-            <card-image
-              :class="{ 'card--selected': isSelected(card.card, i) }"
-              :card="card.card"
-              width="100%"
-            />
-
-          </v-popover>
+          <card-image
+            :class="{ 'card--selected': isSelected(card.card, i) }"
+            :card="card.card"
+            width="100%"
+          />
         </div>
       </template>
     </div>
@@ -102,9 +95,13 @@ export default Cards
   .card-list {
     .card-container {
       opacity: .25;
-      &.card--selected {
-        opacity: 1;
-      }
+    }
+  }
+
+  .card--selected {
+    .card-container {
+
+      opacity: 1;
     }
   }
 </style>
