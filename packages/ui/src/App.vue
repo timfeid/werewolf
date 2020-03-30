@@ -9,7 +9,6 @@
 
 
         </div>
-        <settings class="ml-auto" style="position: relative; top: -2.8rem;right: 1rem;" />
 
       </div>
 
@@ -28,6 +27,9 @@
         </div>
       </div>
     </footer>
+
+    <settings class="ml-auto" style="position: fixed; top: .5rem;right: 1rem;" />
+
   </div>
 </template>
 

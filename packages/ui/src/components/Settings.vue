@@ -113,7 +113,7 @@ export default Settings
 
 <style lang="scss">
   .settings {
-    z-index: 9999;
+    z-index: 100001;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -148,8 +148,8 @@ export default Settings
 
   .close {
     position: fixed;
-    top: 1rem;
-    right: 1rem;
+    top: .5rem;
+    right: .5rem;
     cursor: pointer;
 
     span {
