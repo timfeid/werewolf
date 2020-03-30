@@ -1,5 +1,5 @@
 <template>
-  <v-popover trigger="hover" placement="bottom">
+  <component :is="card.description ? 'v-popover' : 'div'" trigger="hover" placement="bottom">
     <template v-slot:popover>
       <h1>{{ card.name }}</h1>
       <div class="tooltip-info" v-html="card.description" />
@@ -12,7 +12,7 @@
         {{ card.name }}
       </div>
     </div>
-  </v-popover>
+  </component>
 </template>
 
 <script lang="ts">
