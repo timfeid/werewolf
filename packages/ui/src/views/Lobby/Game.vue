@@ -58,6 +58,10 @@
           </div>
         </li>
       </ul>
+
+      <button @click="playAgain">
+        Play Again
+      </button>
     </div>
 
 
@@ -245,6 +249,10 @@ class Game extends Vue {
 
   playNotification () {
     (this.$refs['notification'] as HTMLAudioElement).play()
+
+  }
+
+  playAgain () {
 
   }
 

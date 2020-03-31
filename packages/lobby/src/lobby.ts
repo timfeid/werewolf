@@ -88,10 +88,23 @@ export class Lobby extends EventEmitter {
     }
 
     if (!this._users.find(u => u.user.id === user.id)) {
-
       const u = new LobbyUser(user, this.getCustomColor(user.name), isOwner)
       this._users.push(u)
       this.emit('joined', u)
+    }
+
+    return true
+  }
+
+  public removeUser (user: User) {
+    const index = this._users.findIndex(u => u.user.id === user.id)
+    if (index !== -1) {
+      const user = this._users[index]
+      this._users.splice(index, 1)
+      if (user.isOwner && this._users.length > 0) {
+        this._users[0].isOwner = true
+      }
+      this.emit('left', user)
     }
 
     return true
@@ -172,9 +185,14 @@ export class Lobby extends EventEmitter {
   }
 
   getCustomColor(username: string) {
-    if(username === "dux") return "#FA8072";
-    else if (username === "eloff") return "#7B5804";
-    else return this.remainingColors.pop();
+    switch (username) {
+      case 'dux':
+        return '#FA8072'
+      case 'eloff':
+        return '#7B5804'
+    }
+
+    return this.remainingColors.pop()
   }
 
   start () {
@@ -394,6 +412,21 @@ export class Lobby extends EventEmitter {
     this.emit('user.voted', user)
 
     return user.vote
+  }
+
+  clone (newId: string) {
+    const lobby = new Lobby(newId)
+
+    lobby.users.forEach(user => {
+      lobby.addUser(user.user, user.isOwner)
+    })
+
+    lobby.deck = [...this.deck]
+    const cards: string[] = []
+    this.cards.forEach(c => cards.push(c.name))
+    lobby.setCards(cards)
+
+    return lobby
   }
 
   toObject () {

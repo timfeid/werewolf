@@ -11,13 +11,21 @@ function random(max: number) {
 
 describe('lobby', () => {
   let lobby: Lobby
+  let user: {id: string; name: string}
 
   it('can create a lobby', async () => {
-    const user = {id: 'asdf', name: 'wat'}
-    const lobby = new Lobby('random')
+    user = { id: 'asdf', name: 'wat' }
+    lobby = new Lobby('random')
     lobby.addUser(user, true)
 
     expect(lobby.owner.user).to.have.property('id').eq(user.id)
+  })
+
+  it('can create a lobby', async () => {
+    const user2 = { id: 'adsfh', name: 'bobs burgers' }
+    lobby.addUser(user2, true)
+    lobby.removeUser(user)
+    expect(lobby.owner.user.id).to.eq(user2.id)
   })
 
   it('its changes colors for dux and eloff usernames', async () => {
@@ -144,6 +152,13 @@ describe('lobby', () => {
 
     const middleWerewolves = lobby.middle.filter(c => c.constructor.name === cardId).length
     expect(playerCards.length).to.eq(2 - middleWerewolves)
+  })
+
+  it('can start a new lobby', () => {
+    const cloned = lobby.clone('anotha1')
+    console.log(cloned.cards, cloned.users)
+    expect(cloned.cards)
+    expect(cloned.users.length)
   })
 
 })
