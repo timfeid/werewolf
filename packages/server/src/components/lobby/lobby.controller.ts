@@ -40,7 +40,7 @@ export class LobbyController {
     const lobby = Lobbies.get(ctx.params.id)
     ctx.assert(lobby, 404)
 
-    ctx.assert(lobby.addUser(ctx.user), 400)
+    ctx.assert(lobby.addUser(ctx.user, lobby.users.length === 0), 400)
 
     ctx.body = {
       data: lobby.toObject()
@@ -137,6 +137,17 @@ export class LobbyController {
       data: {
         success: claim !== false
       }
+    }
+  }
+
+  public static async restart(ctx: Context) {
+    ctx.assert(ctx.user, 403)
+    const lobby = Lobbies.get(ctx.params.id)
+    ctx.assert(lobby, 404)
+    ctx.assert(lobby.owner.user.id === ctx.user.id, 401)
+
+    ctx.body = {
+      data: Lobbies.restart(lobby, ctx.redisPubClient, ctx.redisSubClient)
     }
   }
 

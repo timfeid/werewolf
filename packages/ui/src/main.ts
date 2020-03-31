@@ -7,12 +7,13 @@ import store from './store'
 // @ts-ignore
 import VueConfetti from 'vue-confetti'
 import VTooltip from 'v-tooltip'
-
+import Toasted from 'vue-toasted'
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
 Vue.use(VueConfetti)
 Vue.use(VTooltip)
+Vue.use(Toasted, {iconPack : 'material'})
 
 const app = new Vue({
   router,

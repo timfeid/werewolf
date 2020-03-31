@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import Setup from './Lobby/Setup.vue'
 import Game from './Lobby/Game.vue'
 import axios from '../axios'
@@ -31,13 +31,9 @@ class LobbyVue extends Vue {
   lobby: Lobby | null = null
   card: Card | null = null
 
-  async created () {
-    const response = await axios.get(`/lobbies/${this.$route.params.id}`)
-    this.lobby = response.data.data
 
-    if (this.lobby && this.lobby.dealt && this.joined) {
-      this.getCard()
-    }
+  created () {
+    this.setup()
 
     events.$on('lobby.refresh', (lobby: Lobby) => {
       if (this.lobby && this.lobby.id === lobby.id) {
@@ -50,6 +46,36 @@ class LobbyVue extends Vue {
         this.setCard(card)
       }
     })
+
+    events.$on('lobby.disconnect', ({lobby, user}: {lobby: any; user: any}) => {
+      if (this.lobby && lobby.id === this.lobby.id) {
+        this.$toasted.show(`${user.name} has disconnected`, {
+          icon: 'transfer_within_a_station',
+          position: 'top-left',
+          duration: 5000,
+        })
+      }
+    })
+
+    events.$on('lobby.join', ({lobby, user}: {lobby: any; user: any}) => {
+      if (this.lobby && lobby.id === this.lobby.id) {
+        this.$toasted.show(`${user.name} has connected`, {
+          icon: 'transfer_within_a_station',
+          position: 'top-left',
+          duration: 5000,
+        })
+      }
+    })
+  }
+
+  @Watch('$route.params.id')
+  async setup () {
+    const response = await axios.get(`/lobbies/${this.$route.params.id}`)
+    this.lobby = response.data.data
+
+    if (this.lobby && this.lobby.dealt && this.joined) {
+      this.getCard()
+    }
   }
 
   get joined () {

@@ -93,6 +93,11 @@ export class Lobby extends EventEmitter {
       this.emit('joined', u)
     }
 
+    const lu = this._users.find(u => u.user.id === user.id)
+    if (lu) {
+      this.emit('connect', lu.user)
+    }
+
     return true
   }
 
@@ -105,6 +110,7 @@ export class Lobby extends EventEmitter {
         this._users[0].isOwner = true
       }
       this.emit('left', user)
+      this.remainingColors.push(user.color)
     }
 
     return true
@@ -136,6 +142,10 @@ export class Lobby extends EventEmitter {
 
   get cards () {
     return this._cards
+  }
+
+  get started () {
+    return this._started
   }
 
   setCards (cardList: string[]) {
@@ -417,9 +427,7 @@ export class Lobby extends EventEmitter {
   clone (newId: string) {
     const lobby = new Lobby(newId)
 
-    this.users.forEach(user => {
-      lobby.addUser(user.user, user.isOwner)
-    })
+    lobby.addUser(this.owner.user, true)
 
     lobby.deck = [...this.deck]
     const cards: string[] = []
@@ -427,6 +435,8 @@ export class Lobby extends EventEmitter {
       cards.push(c.constructor.name)
     })
     lobby.setCards(cards)
+
+    this.emit('restart', newId)
 
     return lobby
   }

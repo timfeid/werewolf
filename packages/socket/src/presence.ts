@@ -1,5 +1,6 @@
 import redis from 'redis'
 import { UserSocket } from './user-socket'
+import { EventEmitter } from 'events'
 
 export interface SocketPresence {
   socketId: string;
@@ -41,6 +42,12 @@ export class Presence {
   * @param {UserSocket} socket - The socket
   **/
   public remove (socketId: string) {
+    this.getSocket(socketId).then(socketPresence => {
+      if (socketPresence) {
+        this.client.publish('presence', JSON.stringify({type: 'disconnect', obj: socketPresence.userId}))
+      }
+    })
+
     this.client.hdel(
       'presence',
       socketId,
@@ -114,6 +121,13 @@ export class Presence {
     const clients = (await this.list())
     return clients.find(socket => {
       return socket.userId === userId
+    })
+  }
+
+  public async getSocket(socketId: string): Promise<SocketPresence> {
+    const clients = (await this.list())
+    return clients.find(socket => {
+      return socket.socketId === socketId
     })
   }
 

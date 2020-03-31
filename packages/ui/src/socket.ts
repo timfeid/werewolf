@@ -59,6 +59,18 @@ function setup (this: Vue, jwt: string) {
     events.$emit('lobby.end', obj)
   })
 
+  socket.on('lobby.restart', (obj: any) => {
+    events.$emit('lobby.restart', obj)
+  })
+
+  socket.on('lobby.disconnect', (obj: any) => {
+    events.$emit('lobby.disconnect', obj)
+  })
+
+  socket.on('lobby.join', (obj: any) => {
+    events.$emit('lobby.join', obj)
+  })
+
 }
 
 export default function (app: Vue) {

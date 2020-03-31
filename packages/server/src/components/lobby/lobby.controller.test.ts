@@ -271,4 +271,20 @@ describe('lobby controller', () => {
     })
     expect(response.status).to.eq(200)
   })
+
+  it('owner can restart', async () => {
+
+    await new Promise(async resolve => {
+      socket.once('lobby.restart', async () => {
+        resolve()
+      })
+      const response = await request('post', `/lobbies/${lobbyId}/restart`, {
+        token,
+      })
+
+      expect(response.status).to.eq(200)
+      let newLobbyId = response.body.data.id
+      expect(Lobbies.get(newLobbyId)).to.not.be.null
+    })
+  })
 })
