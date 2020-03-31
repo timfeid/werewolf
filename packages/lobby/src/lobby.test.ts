@@ -156,9 +156,9 @@ describe('lobby', () => {
 
   it('can start a new lobby', () => {
     const cloned = lobby.clone('anotha1')
-    console.log(cloned.cards, cloned.users)
-    expect(cloned.cards)
-    expect(cloned.users.length)
+    expect(cloned.cards.length).eq(lobby.cards.length)
+    expect(cloned.users.length).eq(lobby.users.length)
+    expect(cloned.owner.user.id).eq(lobby.owner.user.id)
   })
 
 })

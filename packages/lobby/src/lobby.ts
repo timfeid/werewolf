@@ -417,13 +417,15 @@ export class Lobby extends EventEmitter {
   clone (newId: string) {
     const lobby = new Lobby(newId)
 
-    lobby.users.forEach(user => {
+    this.users.forEach(user => {
       lobby.addUser(user.user, user.isOwner)
     })
 
     lobby.deck = [...this.deck]
     const cards: string[] = []
-    this.cards.forEach(c => cards.push(c.name))
+    this.cards.forEach(c => {
+      cards.push(c.constructor.name)
+    })
     lobby.setCards(cards)
 
     return lobby
