@@ -29,3 +29,12 @@ export function create(user: User, pubClient: RedisClient, subClient: RedisClien
 
   return lobbies[lobbyId]
 }
+
+export function restart(oldLobby: Lobby, pubClient: RedisClient, subClient: RedisClient) {
+  const lobbyId = makeid()
+  const lobby = oldLobby.clone(lobbyId)
+  connect(lobby, pubClient, subClient)
+  lobbies[lobbyId] = lobby
+
+  return lobbies[lobbyId]
+}

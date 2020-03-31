@@ -220,4 +220,10 @@ body,html {
     cursor: pointer;
   }
 }
+
+.toasted .primary, .toasted.toasted-primary {
+  background-color: #202429 !important;
+  border-color: lighten(#202429, 2%) !important;
+  color: #eaeaea !important;
+}
 </style>

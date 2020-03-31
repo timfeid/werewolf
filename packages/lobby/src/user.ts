@@ -31,6 +31,10 @@ export class LobbyUser {
     return this._isOwner
   }
 
+  set isOwner(owner: boolean) {
+    this._isOwner = owner
+  }
+
   get card(): Card {
     return this._card
   }

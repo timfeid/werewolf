@@ -5,7 +5,7 @@ import chaiSubset from 'chai-subset'
 import faker from 'faker'
 import http from 'http'
 import { AddressInfo } from 'net'
-import redis from 'redis'
+import redis, {RedisClient} from 'redis'
 import io from 'socket.io-client'
 import { app } from '../src/app'
 
@@ -16,13 +16,15 @@ let httpServer
 let httpServerAddr: AddressInfo
 let user: User
 let token: string
+let pubClient: RedisClient
+let subClient: RedisClient
 
 before(async () => {
   user = {id: 'kdmsf', name: 'asd'}
   token = await JwtService.sign(user)
 
-  const pubClient = redis.createClient()
-  const subClient = redis.createClient()
+  pubClient = redis.createClient()
+  subClient = redis.createClient()
   httpServer = http.createServer()
   httpServerAddr = httpServer.listen().address() as AddressInfo
 
@@ -48,6 +50,9 @@ beforeEach(async () => {
 })
 
 afterEach(done => {
+  if (!socket.connected) {
+    done()
+  }
   socket.on('disconnect', () => done())
   // make this happen in real time
   app.presence.remove(socket.id)
@@ -67,11 +72,11 @@ describe('socket', () => {
   it('list has our connection', async () => {
     const list = await app.presence.list()
 
+
     expect(list).to.have.lengthOf(1)
     expect(list[0].socketId).to.eq(socket.id)
     expect(list[0].userId).to.eq(user.id)
   })
-
 
   it('gets messages', (done) => {
     const msg = faker.lorem.sentence()
@@ -85,6 +90,12 @@ describe('socket', () => {
     })
 
     app.io.emit('test', msg)
+  })
+
+  it('disconnect', (done) => {
+    subClient.on('message', () => done())
+    subClient.subscribe('presence')
+    socket.disconnect()
   })
 
 })

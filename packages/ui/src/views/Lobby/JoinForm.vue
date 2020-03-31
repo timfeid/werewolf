@@ -52,7 +52,10 @@ class JoinForm extends Vue {
     } catch (e) {
 
     }
-    this.$router.push({name: 'lobby', params: {id: code}})
+    if (this.$route.path !== this.$router.resolve({name: 'lobby', params: {id: code}}).href) {
+
+      this.$router.push({name: 'lobby', params: {id: code}})
+    }
   }
 }
 

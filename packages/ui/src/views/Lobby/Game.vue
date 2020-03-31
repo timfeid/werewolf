@@ -31,7 +31,7 @@
       <h4 class="text-center mb-0">The town voted to lynch {{ highestVotedPlayer.name }}</h4>
       <h1 class="text-center">{{ winner }} win!</h1>
       <ul class="list-group">
-        <li class="list-group-item d-flex" v-for="obj in finalUserCards" :class="{lynched: highestVotedPlayer.id === obj.id}">
+        <li class="list-group-item d-flex" v-for="obj in finalUserCards" :key="obj.id" :class="{lynched: highestVotedPlayer.id === obj.id}">
           <div class="d-flex align-items-center mr-3" style="flex-grow: 1;">
             <player :player="obj" />
             <div class="ml-auto">
@@ -45,7 +45,7 @@
             <span class="badge badge-info">{{ votesFor(obj.id) }} votes</span>
           </div>
         </li>
-        <li class="list-group-item d-flex align-items-center" v-for="(obj, index) in finalMiddleCards" :class="{lynched: highestVotedPlayer.id === 'middle'}">
+        <li class="list-group-item d-flex align-items-center" v-for="(obj, index) in finalMiddleCards" :key="index" :class="{lynched: highestVotedPlayer.id === 'middle'}">
           <player :player="{name: 'Middle '+(index+1), color: '#ffffff'}" />
           <div class="ml-auto">
             {{ obj.name }} <span class="badge badge-danger d-block" v-if="obj.isWerewolf">Werewolf</span>
@@ -58,6 +58,14 @@
           </div>
         </li>
       </ul>
+
+      <div class="mt-3" v-if="owner">
+        <button @click="playAgain" class="btn w-100 text-lowercase btn-outline-secondary">
+          Start over
+        </button>
+      </div>
+
+
     </div>
 
 
@@ -248,10 +256,13 @@ class Game extends Vue {
 
   }
 
+  async playAgain () {
+    const r = await axios.post(`/lobbies/${this.lobby.id}/restart`)
+  }
+
   playFinalSound () {
     let finalSound = 'loser'
     const myFinal = this.finalUserCards.find(u => u.id === this.id)
-    console.log(myFinal.card, myFinal.card.isWerewolf, this.winner)
     if ((myFinal.card.isWerewolf || myFinal.card.id === 'MinionCard') && this.winner === 'Werewolves') {
       finalSound = 'winner'
     } else if (!myFinal.card.isWerewolf && myFinal.card.id !== 'MinionCard' && this.winner === 'Villagers') {
@@ -308,6 +319,12 @@ class Game extends Vue {
         this.finalMiddleCards = middle
         this.finalUserCards = users
         this.playFinalSound()
+      }
+    })
+
+    events.$on('lobby.restart', ({lobby, id}: {lobby: any;id: string}) => {
+      if (this.lobby && lobby.id === this.lobby.id) {
+        this.$router.push({name: 'lobby', params: {id}})
       }
     })
   }
