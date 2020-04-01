@@ -18,25 +18,6 @@ const presenceSocket = new Socket()
 export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisClient) {
 
   presenceSocket.attach(null, pubClient, subClient)
-  subClient.on('message', (channel, message) => {
-    const msg = JSON.parse(message)
-    if (msg.type === 'disconnect') {
-      const user = lobby.users.find(u => u.user.id === msg.obj)
-      if (user) {
-        sendMessage({
-          message: 'lobby.disconnect',
-          attrs: {
-            user: user.user,
-          },
-        })
-        if (!lobby.started) {
-          lobby.removeUser(user.user)
-        }
-      }
-    }
-  })
-  subClient.subscribe('presence')
-
   const io = emitter(pubClient as any)
 
   async function sendTo(user: User, msg: string, attrs: Record<string, any>) {
@@ -133,6 +114,7 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
           }
         }),
         middle: lobby.middle.map(u => u.toObject()),
+        actions: lobby.actions,
       }
     })
 
@@ -212,4 +194,22 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     })
   })
 
+  subClient.on('message', (channel, message) => {
+    const msg = JSON.parse(message)
+    if (msg.type === 'disconnect') {
+      const user = lobby.users.find(u => u.user.id === msg.obj)
+      if (user) {
+        sendMessage({
+          message: 'lobby.disconnect',
+          attrs: {
+            user: user.user,
+          },
+        })
+        if (!lobby.started) {
+          lobby.removeUser(user.user)
+        }
+      }
+    }
+  })
+  subClient.subscribe('presence')
 }

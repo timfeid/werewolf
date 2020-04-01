@@ -8,6 +8,7 @@ import { TroublemakerCard } from '../../werewolf/src/cards/troublemaker'
 import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { LobbyUser } from './user'
+import { Action } from './action'
 
 
 
@@ -59,7 +60,7 @@ export class Lobby extends EventEmitter {
   protected minUsers = 3
   protected deck: Card[] = []
   protected _cards: Card[] = []
-  protected _middle: Card[] = []
+  protected _middle: LobbyUser[] = []
   protected _id: string
   protected dealt = false
   protected _started = false
@@ -67,6 +68,7 @@ export class Lobby extends EventEmitter {
   protected remainingColors = [...defaultColors]
   protected timeLeft = 0
   protected juryTimeLeft = 300
+  protected _actions: Action[] = []
 
   constructor (id: string) {
     super()
@@ -87,7 +89,7 @@ export class Lobby extends EventEmitter {
       return false
     }
 
-    if (!this._users.find(u => u.user.id === user.id)) {
+    if (!this._users.find(u => u.user.id === user.id) && !this.started) {
       const u = new LobbyUser(user, this.getCustomColor(user.name), isOwner)
       this._users.push(u)
       this.emit('joined', u)
@@ -148,6 +150,42 @@ export class Lobby extends EventEmitter {
     return this._started
   }
 
+  get actions () {
+    return this._actions.map(action => {
+      return {
+        who: action.who.toObject(),
+        originalCard: action.who.originalCard.toObject(),
+        action: action.action,
+        whats: action.whats.map(what => {
+          return {
+            position: what.position,
+            card: what.card.toObject(),
+            user: this.getUserInPosition(what.position),
+          }
+        })
+      }
+    })
+  }
+
+  getUserInPosition (position: CardPosition) {
+    return position.type == 'player' ? this.users[position.index].toObject() : this.middle[position.index].toObject()
+  }
+
+  addAction (userId: string, action: string, what: string[]) {
+    this._actions.push(new Action(this.getUser(userId), action, what.map(card => {
+      return {
+        position: this.convertToCardPosition(card),
+        card: this.getCard(card),
+      }
+    })))
+
+  }
+
+  getUser(userId: string) {
+    return this._users.find(u => u.user.id === userId)
+  }
+
+
   setCards (cardList: string[]) {
     this._cards = []
     cardList.forEach(c => {
@@ -183,7 +221,11 @@ export class Lobby extends EventEmitter {
       this._users.forEach(lu => {
         lu.card = this.deck.pop()
       })
-      this._middle = this.deck.slice(0)
+      this._middle = this.deck.slice(0).map((c, i) => {
+        const lu = new LobbyUser({name: `Middle ${i}`, id: `M${i}`}, '#ffffff', false)
+        lu.card = c
+        return lu
+      })
       this.dealt = true
       this.emit('dealt')
     }
@@ -289,7 +331,7 @@ export class Lobby extends EventEmitter {
       return null
     }
 
-    return this.middle[index]
+    return this.middle[index].card
   }
 
   convertToCardPosition(position: string): CardPosition {
@@ -299,7 +341,7 @@ export class Lobby extends EventEmitter {
     }
   }
 
-  getCard(position: CardPosition | string) {
+  getCard(position: CardPosition | string): Card {
     if (typeof position === 'string') {
       position = this.convertToCardPosition(position)
     }
@@ -308,7 +350,7 @@ export class Lobby extends EventEmitter {
       return this.users[position.index].card
     }
 
-    return this.middle[position.index]
+    return this.middle[position.index].card
   }
 
   getOriginalCardForUserId(userId: string) {
@@ -366,8 +408,8 @@ export class Lobby extends EventEmitter {
     if (swapIndex.type === 'player') {
       swapCard = this._users[swapIndex.index].card
       if (withIndex.type === 'middle') {
-        this._users[swapIndex.index].card = this.middle[withIndex.index]
-        this.middle[withIndex.index] = swapCard
+        this._users[swapIndex.index].card = this.middle[withIndex.index].card
+        this.middle[withIndex.index].card = swapCard
       } else if (withIndex.type === 'player') {
         swapCard = this._users[swapIndex.index].card
         this._users[swapIndex.index].card = this._users[withIndex.index].card

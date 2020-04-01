@@ -169,6 +169,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.view.match(/M[123]+/), 400)
 
         if (ctx.request.body.view) {
+          lobby.addAction(ctx.user.id, 'copycated', [ctx.request.body.view])
           ctx.body = {
             data: lobby.copycat(ctx.user.id, ctx.request.body.view),
           }
@@ -180,6 +181,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.view.match(/P\d+/), 400)
 
         if (ctx.request.body.view) {
+          lobby.addAction(ctx.user.id, 'doppelgangged', [ctx.request.body.view])
           ctx.body = {
             data: lobby.doppelganger(ctx.user.id, ctx.request.body.view),
           }
@@ -190,6 +192,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.view, 400)
         ctx.assert(ctx.request.body.view.match(/M[123]/), 400)
         if (ctx.request.body.view) {
+          lobby.addAction(ctx.user.id, 'viewed', [ctx.request.body.view])
           ctx.body = {
             data: lobby.getCard(ctx.request.body.view).toObject()
           }
@@ -212,6 +215,7 @@ export class LobbyController {
         ctx.assert(lookups.length > 0, 400)
 
         if (ctx.request.body.view) {
+          lobby.addAction(ctx.user.id, 'viewed', lookups)
           ctx.body = {
             data: lookups.map(lookup => {
               return {
@@ -228,6 +232,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.view.match(/P\d+/), 400)
 
         if (ctx.request.body.view) {
+          lobby.addAction(ctx.user.id, 'viewed', [ctx.request.body.view])
           ctx.body = {
             data: lobby.getCard(ctx.request.body.view).toObject(),
           }
@@ -238,6 +243,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.swap, 400)
         ctx.assert(ctx.request.body.swap.match(/P\d+/), 400)
 
+        lobby.addAction(ctx.user.id, 'swapped with', [ctx.request.body.swap])
         lobby.swapCards({
           type: 'player',
           index: lobby.users.findIndex(u => u.user.id === ctx.user.id)
@@ -253,7 +259,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.swap.length === 2, 400)
         ctx.assert(ctx.request.body.swap[0].match(/P\d+/), 400)
         ctx.assert(ctx.request.body.swap[1].match(/P\d+/), 400)
-
+        lobby.addAction(ctx.user.id, 'swapped', ctx.request.body.swap)
         lobby.swapCards(lobby.convertToCardPosition(ctx.request.body.swap[0]), lobby.convertToCardPosition(ctx.request.body.swap[1]))
 
         ctx.body = {
@@ -265,6 +271,7 @@ export class LobbyController {
         ctx.assert(ctx.request.body.swap, 400)
         ctx.assert(ctx.request.body.swap.match(/M[123]/), 400)
 
+        lobby.addAction(ctx.user.id, 'swapped with', [ctx.request.body.swap])
         lobby.swapCards({
           type: 'player',
           index: lobby.users.findIndex(u => u.user.id === ctx.user.id)
@@ -276,6 +283,7 @@ export class LobbyController {
         break
 
       case InsomniacCard.name:
+        lobby.addAction(ctx.user.id, 'viewed his/her card', [])
         ctx.body = {
           data: { card: lobby.getCardObjectForUserId(ctx.user.id) }
         }

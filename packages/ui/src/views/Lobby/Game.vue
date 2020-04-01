@@ -65,6 +65,15 @@
         </button>
       </div>
 
+      <div class="mt-3">
+        <ul>
+          <li v-for="action in actions">
+            {{ action.who.name }} {{ action.action }} {{ action.whats.map(what => what.user.name).join(', ') }}
+          </li>
+        </ul>
+        <pre>{{ actions }}</pre>
+      </div>
+
 
     </div>
 
@@ -182,6 +191,8 @@ class Game extends Vue {
   turnTimer = 0
 
   juryTimer = 0
+
+  actions: any[] = []
 
   myTurn = false
 
@@ -313,11 +324,12 @@ class Game extends Vue {
       }
     })
 
-    events.$on('lobby.end', ({lobby, users, middle}: {lobby: any;users: any;middle: any}) => {
+    events.$on('lobby.end', ({lobby, users, middle, actions}: {lobby: any;users: any;middle: any, actions: any[]}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
         this.finished = true
         this.finalMiddleCards = middle
         this.finalUserCards = users
+        this.actions = actions
         this.playFinalSound()
       }
     })
