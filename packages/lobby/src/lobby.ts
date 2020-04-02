@@ -9,9 +9,6 @@ import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { LobbyUser } from './user'
 import { Action } from './action'
-import { AssassinCard } from 'packages/werewolf/src/cards/assassin'
-
-
 
 export interface CardPosition {
   type: 'middle' | 'player'
