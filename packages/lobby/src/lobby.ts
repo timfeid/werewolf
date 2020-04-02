@@ -153,6 +153,7 @@ export class Lobby extends EventEmitter {
       return {
         who: action.who.toObject(),
         originalCard: action.who.originalCard.toObject(),
+        currentCard: action.currentCard,
         action: action.action,
         whats: action.whats.map(what => {
           return {

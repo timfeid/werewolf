@@ -69,20 +69,32 @@
         </li>
       </ul>
 
-      <div class="mt-3">
-        <ul>
-          <li v-for="action in actions">
-            {{ action.who.name }} {{ action.action }} {{ action.whats.map(what => what.user.name).join(', ') }}
-          </li>
-        </ul>
+      <div class="mt-5">
 
-        <div v-if="owner">
+        <div class="mb-5" v-if="owner">
           <button @click="playAgain" class="btn w-100 text-lowercase btn-outline-secondary">
             Start over
           </button>
         </div>
 
-        <pre>{{ actions }}</pre>
+        <h4 class="text-center">Here is what happened last night</h4>
+        <ul class="list-group">
+          <li class="list-group-item" v-for="action in actions">
+            <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center">
+                <card-image style="" :card="{...action.currentCard, name: action.who.name}" />
+              </div>
+              <div class="mx-auto">
+                {{ action.action }}
+              </div>
+              <div>
+                <div class="d-flex mt-2 align-items-center" v-for="what in action.whats">
+                  <card-image style="" :card="{...what.card, name: what.user.name}" />
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
 
