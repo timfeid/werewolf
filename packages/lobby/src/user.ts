@@ -6,6 +6,7 @@ export class LobbyUser {
   protected _user: User
   protected _vote: User
   protected _isOwner: boolean
+  public hasMarkOfAssassin = false
   protected _originalCard: Card
   protected _doppelganger: Card
   protected _copycat: Card

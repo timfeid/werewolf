@@ -6,6 +6,10 @@ export class MinionCard extends Card {
     return 'Minion'
   }
 
+  get winsWith(): string {
+    return 'werewolves'
+  }
+
   get description() {
     return `<p>The Werewolves don’t know who the Minion
 is. If the Minion dies and no Werewolves die, the

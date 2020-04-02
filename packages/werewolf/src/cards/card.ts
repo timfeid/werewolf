@@ -8,12 +8,16 @@ export abstract class Card {
     return {}
   }
 
+  get winsWith(): string {
+    return 'villagers'
+  }
+
   get isWerewolf(): boolean {
     return false
   }
 
   get turnLength(): number {
-    return 15
+    return 3
   }
 
   public toObject () {
@@ -23,6 +27,7 @@ export abstract class Card {
       id: this.constructor.name,
       turnLength: this.turnLength,
       isWerewolf: this.isWerewolf,
+      winsWith: this.winsWith,
     }
   }
 }

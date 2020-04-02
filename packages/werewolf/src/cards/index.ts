@@ -11,6 +11,8 @@ import { SeerCard } from './seer'
 import { TroublemakerCard } from './troublemaker'
 import { VillagerCard } from './villager'
 import { WerewolfCard } from './werewolf'
+import { SquireCard } from './squire'
+import { AssassinCard } from './assassin'
 
 export interface CardConfiguration {
   card: typeof Card;
@@ -26,6 +28,10 @@ const cardConfiguration: CardConfiguration[] = [
   },
   {
     card: DoppelgangerCard,
+    max: 1,
+  },
+  {
+    card: AssassinCard,
     max: 1,
   },
   {
@@ -63,6 +69,10 @@ const cardConfiguration: CardConfiguration[] = [
   },
   {
     card: InsomniacCard,
+    max: 1,
+  },
+  {
+    card: SquireCard,
     max: 1,
   },
   {

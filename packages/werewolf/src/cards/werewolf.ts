@@ -6,6 +6,10 @@ export class WerewolfCard extends Card {
     return 'Werewolf'
   }
 
+  get winsWith(): string {
+    return 'werewolves'
+  }
+
   get description() {
     return `<p>At night, all Werewolves open
 their eyes and look for other

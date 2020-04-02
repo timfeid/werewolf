@@ -9,12 +9,13 @@ import { VillagerCard } from '../../werewolf/src/cards/villager'
 import { WerewolfCard } from '../../werewolf/src/cards/werewolf'
 import { LobbyUser } from './user'
 import { Action } from './action'
+import { AssassinCard } from 'packages/werewolf/src/cards/assassin'
 
 
 
 export interface CardPosition {
-  type: 'middle' | 'player';
-  index: number;
+  type: 'middle' | 'player'
+  index: number
 }
 
 const defaultColors = [
@@ -160,7 +161,7 @@ export class Lobby extends EventEmitter {
           return {
             position: what.position,
             card: what.card.toObject(),
-            user: this.getUserInPosition(what.position),
+            user: this.getUserInPosition(what.position).toObject(),
           }
         })
       }
@@ -168,7 +169,7 @@ export class Lobby extends EventEmitter {
   }
 
   getUserInPosition (position: CardPosition) {
-    return position.type == 'player' ? this.users[position.index].toObject() : this.middle[position.index].toObject()
+    return position.type == 'player' ? this.users[position.index] : this.middle[position.index]
   }
 
   addAction (userId: string, action: string, what: string[]) {
@@ -222,7 +223,7 @@ export class Lobby extends EventEmitter {
         lu.card = this.deck.pop()
       })
       this._middle = this.deck.slice(0).map((c, i) => {
-        const lu = new LobbyUser({name: `Middle ${i}`, id: `M${i}`}, '#ffffff', false)
+        const lu = new LobbyUser({name: `Middle ${i+1}`, id: `M${i}`}, '#ffffff', false)
         lu.card = c
         return lu
       })
@@ -314,7 +315,7 @@ export class Lobby extends EventEmitter {
     if (this.juryTimeLeft > 0) {
       setTimeout(this.juryPhase.bind(this), process.env.NODE_ENV === 'test' ? 1 : 1000)
     } else {
-      this.emit('end')
+      this.gameEnded()
     }
   }
 
@@ -403,6 +404,13 @@ export class Lobby extends EventEmitter {
     return card.toObject()
   }
 
+  markOfAssassin(position: CardPosition) {
+    const user = this.getUserInPosition(position)
+    user.hasMarkOfAssassin = true
+
+    return true
+  }
+
   swapCards(swapIndex: CardPosition, withIndex: CardPosition) {
     let swapCard: Card
     if (swapIndex.type === 'player') {
@@ -432,6 +440,45 @@ export class Lobby extends EventEmitter {
 
   findOriginalWerewolves() {
     return this._users.filter(u => u.originalCard.isWerewolf)
+  }
+
+  get highestVoted () {
+    const votes = new Map()
+    this.users.forEach(u => {
+      if (u.vote && u.vote.id) {
+        const voteId = u.vote.id
+        votes.set(voteId, votes.has(voteId) ? votes.get(voteId) + 1 : 1)
+      }
+    })
+
+    const b = [...votes.entries()].sort((a, b) => a[1] > b[1] ? -1 : 1)
+
+    if (b.length > 0) {
+      return this.users.find(u => u.user.id === b[0][0]) || this.middle[0]
+    }
+
+    return this.middle[0]
+  }
+
+  getWinners () {
+    const winners: string[] = []
+
+    if (this.middle[0].user.id === this.highestVoted.user.id) {
+      winners.push(this.middle.find(m => m.card.isWerewolf) ? 'villagers' : 'werewolves')
+      return winners
+    }
+
+    if (this.highestVoted.hasMarkOfAssassin) {
+      winners.push('assassins')
+    }
+
+    winners.push((this.highestVoted.card.isWerewolf && !['Minion', 'Squire'].includes(this.highestVoted.card.name)) ? 'villagers' : 'werewolves')
+
+    return winners
+  }
+
+  gameEnded () {
+    this.emit('end', this.getWinners())
   }
 
   end () {

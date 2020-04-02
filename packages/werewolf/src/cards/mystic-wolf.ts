@@ -6,6 +6,10 @@ export class MysticWolfCard extends Card {
     return 'Mystic Wolf'
   }
 
+  get winsWith(): string {
+    return 'werewolves'
+  }
+
   get description() {
     return `<p>The Mystic Wolf wakes with the other Werewolves.
     Afterwards, the Mystic Wolf wakes up seperately.

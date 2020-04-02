@@ -1,7 +1,14 @@
 <template>
   <div>
-    <div v-if="card" class="your-card">
-      <card-image style="width: 100%" :card="card" />
+    <div v-if="card" class="your-card d-flex align-items-center justify-content-center">
+      <card-image :card="card" />
+      <div class="mx-3" v-if="finalCard">
+        <span class="material-icons" style="transform: rotate(90deg);">transform</span>
+      </div>
+      <div v-if="finalCard">
+        <card-image :card="finalCard.card" />
+      </div>
+
       <audio ref="voiceaudio" autoplay="true">
         <source :src="require(`@/assets/sound/rules/${card.id}.mp3`)" type="audio/ogg">
       </audio>
@@ -28,43 +35,39 @@
     <vote v-if="juryTimer > 0" :jury-timer="juryTimer" :lobby="lobby" :owner="owner" />
 
     <div class="mt-4" v-if="finished">
-      <h4 class="text-center mb-0">The town voted to lynch {{ highestVotedPlayer.name }}</h4>
-      <h1 class="text-center">{{ winner }} win!</h1>
+      <h4 class="text-center mb-0">The town voted to lynch {{ lynched.name }}</h4>
+      <h1 class="text-center">{{ winners.join(', ') }} win!</h1>
       <ul class="list-group">
-        <li class="list-group-item d-flex" v-for="obj in finalUserCards" :key="obj.id" :class="{lynched: highestVotedPlayer.id === obj.id}">
+        <li class="list-group-item d-flex" v-for="obj in finalUserCards" :key="obj.id" :class="{lynched: lynched.id === obj.id}">
           <div class="d-flex align-items-center mr-3" style="flex-grow: 1;">
             <player :player="obj" />
-            <div class="ml-auto">
-             {{ obj.card.name }} <span class="badge badge-danger d-block" v-if="obj.card.isWerewolf">Werewolf</span>
+            <div class="ml-auto text-center">
+             {{ obj.card.name }} <span class="badge badge-danger d-block" v-if="obj.card.isWerewolf" v-tooltip="'was or became a werewolf'">Werewolf</span>
+             <span v-tooltip="'marked for assassination'" class="badge badge-secondary d-block" v-if="obj.hasMarkOfAssassin">marked</span>
             </div>
             <div class="player ml-auto">
               <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.card.id}" />
             </div>
           </div>
           <div class="ml-auto my-auto">
-            <span class="badge badge-info">{{ votesFor(obj.id) }} votes</span>
+            <span class="badge badge-success p-2">{{ votesFor(obj.id) }} votes</span>
           </div>
         </li>
-        <li class="list-group-item d-flex align-items-center" v-for="(obj, index) in finalMiddleCards" :key="index" :class="{lynched: highestVotedPlayer.id === 'middle'}">
-          <player :player="{name: 'Middle '+(index+1), color: '#ffffff'}" />
-          <div class="ml-auto">
-            {{ obj.name }} <span class="badge badge-danger d-block" v-if="obj.isWerewolf">Werewolf</span>
+        <li class="list-group-item d-flex" v-for="obj in finalMiddleCards" :key="obj.id" :class="{lynched: lynched.id === 'M0'}">
+          <div class="d-flex align-items-center mr-3" style="flex-grow: 1;">
+            <player :player="obj" />
+            <div class="ml-auto text-center">
+             {{ obj.card.name }} <span class="badge badge-danger d-block" v-if="obj.card.isWerewolf" v-tooltip="'was or became a werewolf'">Werewolf</span>
+            </div>
+            <div class="player ml-auto">
+              <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.card.id}" />
+            </div>
           </div>
-          <div class="player ml-auto mr-3">
-            <card-image style="transform: scale(.75);margin-top: -1rem;margin-bottom: -1rem;margin-left: -1.8rem;" :card="{id: obj.id}" />
-          </div>
-          <div>
-            <span class="badge badge-info">{{ votesFor('middle') }} votes</span>
+          <div class="ml-auto my-auto">
+            <span class="badge badge-success p-2">{{ votesFor(obj.id) }} votes</span>
           </div>
         </li>
       </ul>
-
-      <div class="mt-3" v-if="owner">
-        <button @click="playAgain" class="btn w-100 text-lowercase btn-outline-secondary">
-          Start over
-        </button>
-      </div>
-
       <div class="mt-3">
         <ul>
           <li v-for="action in actions">
@@ -76,6 +79,13 @@
 
 
     </div>
+
+
+      <div class="mt-3" v-if="owner">
+        <button @click="playAgain" class="btn w-100 text-lowercase btn-outline-secondary">
+          Start over
+        </button>
+      </div>
 
 
       <div class="keeper-text" @click="showKeeperText = !showKeeperText">
@@ -135,7 +145,9 @@ import Mason from './Turns/Mason.vue'
 import Seer from './Turns/Seer.vue'
 import Robber from './Turns/Robber.vue'
 import Troublemaker from './Turns/Troublemaker.vue'
+import Squire from './Turns/Squire.vue'
 import MysticWolf from './Turns/MysticWolf.vue'
+import Assassin from './Turns/Assassin.vue'
 import Drunk from './Turns/Drunk.vue'
 import Copycat from './Turns/Copycat.vue'
 import Insomniac from './Turns/Insomniac.vue'
@@ -157,8 +169,10 @@ const UserStore = namespace('user')
     Seer,
     Vote,
     Player,
+    Squire,
     Robber,
     Troublemaker,
+    Assassin,
     Drunk,
     Doppelganger,
     Insomniac,
@@ -193,6 +207,10 @@ class Game extends Vue {
   juryTimer = 0
 
   actions: any[] = []
+
+  lynched: any
+
+  winners: string[] = []
 
   myTurn = false
 
@@ -232,34 +250,8 @@ class Game extends Vue {
     })
   }
 
-  get winner () {
-    if (this.highestVoted.id === 'middle') {
-      return this.finalMiddleCards.find(c => c.isWerewolf) ? 'Villagers' : 'Werewolves'
-    }
-    return (this.highestVotedPlayer.card.id === 'MinionCard' || !this.highestVotedPlayer.card.isWerewolf) ? 'Werewolves' : 'Villagers'
-  }
-
-  get highestVotedPlayer () {
-    return this.finalUserCards.find(u => u.id === this.highestVoted.id) || {id: 'middle', name: 'middle'}
-  }
-
-  get highestVoted () {
-    const votes = new Map()
-    this.lobby.users.forEach(u => {
-      if (u.vote && u.vote.id) {
-        const voteId = u.vote.id
-        votes.set(voteId, votes.has(voteId) ? votes.get(voteId) + 1 : 1)
-      }
-    })
-
-    const b = [...votes.entries()].sort((a,b) => a[1] > b[1] ? -1 : 1)
-
-    if (b.length > 0) {
-      return this.lobby.users.find(u => u.id === b[0][0]) || {id:'middle'}
-    }
-
-    return {id: 'middle'}
-    // return v.shift()
+  get finalCard () {
+    return this.finalUserCards.find(u => u.id === this.id)
   }
 
   playNotification () {
@@ -273,18 +265,12 @@ class Game extends Vue {
 
   playFinalSound () {
     let finalSound = 'loser'
-    const myFinal = this.finalUserCards.find(u => u.id === this.id)
-    if ((myFinal.card.isWerewolf || myFinal.card.id === 'MinionCard') && this.winner === 'Werewolves') {
+    if (this.winners.includes(this.finalCard.card.winsWith)) {
       finalSound = 'winner'
-    } else if (!myFinal.card.isWerewolf && myFinal.card.id !== 'MinionCard' && this.winner === 'Villagers') {
-      finalSound = 'winner'
+      this.showConfetti()
     }
 
     (this.$refs[finalSound] as HTMLAudioElement).play()
-
-    if (finalSound === 'winner') {
-      this.showConfetti()
-    }
   }
 
   created () {
@@ -324,12 +310,14 @@ class Game extends Vue {
       }
     })
 
-    events.$on('lobby.end', ({lobby, users, middle, actions}: {lobby: any;users: any;middle: any, actions: any[]}) => {
+    events.$on('lobby.end', ({lobby, users, middle, actions, winners, lynched}: {lobby: any;users: any;middle: any, actions: any[];winners: string[];lynched: any}) => {
       if (this.lobby && lobby.id === this.lobby.id) {
         this.finished = true
         this.finalMiddleCards = middle
         this.finalUserCards = users
         this.actions = actions
+        this.winners = winners
+        this.lynched = lynched
         this.playFinalSound()
       }
     })

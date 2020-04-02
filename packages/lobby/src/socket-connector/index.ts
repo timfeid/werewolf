@@ -70,7 +70,6 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
   }
 
   lobby.on('left', () => {
-    console.log('someone lefted the gammmmme')
     sendRefresh()
   })
 
@@ -103,17 +102,26 @@ export function connect(lobby: Lobby, pubClient: RedisClient, subClient: RedisCl
     sendRefresh()
   })
 
-  lobby.on('end', () => {
+  lobby.on('end', (winners) => {
     sendMessage({
       message: 'lobby.end',
       attrs: {
+        winners,
+        lynched: lobby.highestVoted.toObject(),
         users: lobby.users.map(u => {
           return {
             card: u.card.toObject(),
-            ...u.toObject()
+            ...u.toObject(),
+            hasMarkOfAssassin: u.hasMarkOfAssassin,
           }
         }),
-        middle: lobby.middle.map(u => u.toObject()),
+        middle: lobby.middle.map(u => {
+          return {
+            card: u.card.toObject(),
+            ...u.toObject(),
+            hasMarkOfAssassin: u.hasMarkOfAssassin,
+          }
+        }),
         actions: lobby.actions,
       }
     })

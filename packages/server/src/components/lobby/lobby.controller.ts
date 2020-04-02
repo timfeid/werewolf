@@ -11,6 +11,7 @@ import { RobberCard } from '../../../../werewolf/src/cards/robber'
 import { SeerCard } from '../../../../werewolf/src/cards/seer'
 import { TroublemakerCard } from '../../../../werewolf/src/cards/troublemaker'
 import { WerewolfCard } from '../../../../werewolf/src/cards/werewolf'
+import { AssassinCard } from '../../../../werewolf/src/cards/assassin'
 
 export class LobbyController {
   public static async create(ctx: Context) {
@@ -251,6 +252,18 @@ export class LobbyController {
 
         ctx.body = {
           data: lobby.getCardObjectForUserId(ctx.user.id)
+        }
+        break
+
+      case AssassinCard.name:
+        ctx.assert(ctx.request.body.mark, 400)
+        ctx.assert(ctx.request.body.mark.match(/P\d+/), 400)
+
+        lobby.addAction(ctx.user.id, 'placed mark of assassin on', [ctx.request.body.mark])
+        lobby.markOfAssassin(lobby.convertToCardPosition(ctx.request.body.mark))
+
+        ctx.body = {
+          data: {success: true}
         }
         break
 

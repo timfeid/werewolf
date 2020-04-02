@@ -59,8 +59,24 @@ export default CardImage
     position: absolute;
 
     &-CopycatCard {
-    background: asset('cards2.png');
+      background: asset('cards2.png');
       background-position: -55px -1px;
+      width: 290px;
+      height: 407px;
+      left: 27px;
+    }
+
+    &-AssassinCard {
+      background: asset('cards2.png');
+      background-position: -1695px -419px;
+      width: 290px;
+      height: 407px;
+      left: 27px;
+    }
+
+    &-SquireCard {
+      background: asset('cards2.png');
+      background-position: -860px -1228px;
       width: 290px;
       height: 407px;
       left: 27px;
@@ -74,7 +90,7 @@ export default CardImage
     }
 
     &-MysticWolfCard {
-      background-position: -1265px -2px;
+      background-position: -1255px -2px;
       width: 319px;
       height: 407px;
       left: 23px;
