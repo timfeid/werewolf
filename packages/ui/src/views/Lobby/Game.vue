@@ -68,25 +68,23 @@
           </div>
         </li>
       </ul>
+
       <div class="mt-3">
         <ul>
           <li v-for="action in actions">
             {{ action.who.name }} {{ action.action }} {{ action.whats.map(what => what.user.name).join(', ') }}
           </li>
         </ul>
+
+        <div v-if="owner">
+          <button @click="playAgain" class="btn w-100 text-lowercase btn-outline-secondary">
+            Start over
+          </button>
+        </div>
+
         <pre>{{ actions }}</pre>
       </div>
-
-
     </div>
-
-
-      <div class="mt-3" v-if="owner">
-        <button @click="playAgain" class="btn w-100 text-lowercase btn-outline-secondary">
-          Start over
-        </button>
-      </div>
-
 
       <div class="keeper-text" @click="showKeeperText = !showKeeperText">
         <v-popover
