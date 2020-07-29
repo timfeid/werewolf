@@ -10,6 +10,7 @@ publicRouter.get('/cards', CardController.list)
 
 
 publicRouter.get('/ha.m3u8', NJDController.m3u8)
+publicRouter.get('/m3u8/:id/:date', NJDController.geUrl)
 
 export { publicRouter }
 
