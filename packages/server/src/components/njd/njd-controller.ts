@@ -7,7 +7,7 @@ export class NJDController {
 
     ctx.body = response.data
       .replace(/\/ha\.m3u8\?url=/g, 'https://wolf.timfeid.com/ha.m3u8?url=')
-      .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://nhl.timfeid.com/njd')
+      .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://nhl.timfeid.com/proxy?url=')
   }
 
   public static async get (ctx: Context) {
@@ -15,7 +15,7 @@ export class NJDController {
 
     ctx.body = response.data
       .replace(/\/ha\.m3u8\?url=/g, 'https://wolf.timfeid.com/ha.m3u8?url=')
-      .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://nhl.timfeid.com/njd')
+      .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://nhl.timfeid.com/proxy?url=')
   }
   
   public static async proxy (ctx: Context) {
