@@ -4,6 +4,8 @@ import { Context } from 'koa';
 export class NJDController {
   public static async m3u8 (ctx: Context) {
     const response = await axios.get("https://puddy.zipstreams.net/ha.m3u8?url="+ctx.request.query.url);
+    
+    console.log(response)
 
     ctx.body = response.data
       .replace(/\/ha\.m3u8\?url=/g, 'https://wolf.timfeid.com/ha.m3u8?url=')
