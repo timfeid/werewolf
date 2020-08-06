@@ -3,13 +3,19 @@ import { Context } from 'koa';
 
 export class NJDController {
   public static async m3u8 (ctx: Context) {
+      try {
     const response = await axios.get("https://puddy.zipstreams.net/ha.m3u8?url="+ctx.request.query.url);
+    
+    
     
     console.log(response)
 
     ctx.body = response.data
       .replace(/\/ha\.m3u8\?url=/g, 'https://wolf.timfeid.com/ha.m3u8?url=')
       .replace(/#EXT-X-KEY:METHOD=AES-128,URI="/g, '#EXT-X-KEY:METHOD=AES-128,URI="https://puddy.zipstreams.net')
+      } catch (e) {
+          console.log(e)
+      }
   }
 
   public static async get (ctx: Context) {
