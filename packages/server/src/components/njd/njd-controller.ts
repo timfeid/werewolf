@@ -33,7 +33,8 @@ export class NJDController {
   }
 
   public static async getUrl (ctx: Context) {
-    const response = await axios.get(`https://puddy.zipstreams.net/getM3U8.php?id=${ctx.params.id}&league=nhl&date=${ctx.params.date}&cdn=akc`);
+    // const response = await axios.get(`https://puddy.zipstreams.net/getM3U8.php?id=${ctx.params.id}&league=nhl&date=${ctx.params.date}&cdn=akc`);
+    const response = await axios.get(`https://puddy.zipstreams.net/m3u8/${ctx.params.date}/${ctx.params.id}akc`);
 
     ctx.body = response.data
   }
