@@ -137,10 +137,10 @@ export class NJDController {
       loadImage(homeImageUrl),
       loadImage(awayImageUrl),
     ])
-    const homeImageScaledHeight = homeImg.naturalHeight * .2
-    const homeImageScaledWidth = homeImg.naturalWidth * .2
-    const awayImageScaledHeight = awayImg.naturalHeight * .2
-    const awayImageScaledWidth = awayImg.naturalWidth * .2
+    const homeImageScaledHeight = homeImg.naturalHeight * .12
+    const homeImageScaledWidth = homeImg.naturalWidth * .12
+    const awayImageScaledHeight = awayImg.naturalHeight * .12
+    const awayImageScaledWidth = awayImg.naturalWidth * .12
     ctx.drawImage(homeImg, 0, 5, homeImageScaledWidth, homeImageScaledHeight)
     ctx.drawImage(awayImg, canvas.width - awayImageScaledWidth, canvas.height-awayImageScaledHeight-5, awayImageScaledWidth, awayImageScaledHeight)
 
