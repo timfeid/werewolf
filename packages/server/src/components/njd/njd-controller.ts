@@ -49,16 +49,16 @@ export class NJDController {
     // const homeImage = await axios.get('https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/1.svg')
     // console.log(homeImage.data)
 
-    ctx.fillStyle = '#000000'
+    ctx.fillStyle = '#ffffff'
     ctx.imageSmoothingEnabled = true
 
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = '#000000'
     ctx.textAlign = 'center'
 
-    const homeImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/${koaCtx.params.homeId}.svg`
-    const awayImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/${koaCtx.params.awayId}.svg`
+    const homeImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${koaCtx.params.homeId}.svg`
+    const awayImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/${koaCtx.params.awayId}.svg`
     const [homeImg, awayImg] = await Promise.all([
       loadImage(homeImageUrl),
       loadImage(awayImageUrl),
