@@ -14,7 +14,7 @@ publicRouter.get('/m3u8/:id/:date', NJDController.getUrl)
 publicRouter.get('/trick', NJDController.getTrickedUrl)
 publicRouter.get('/proxy', NJDController.proxy)
 publicRouter.get('/card/:homeId/:awayId', NJDController.getImage)
-publicRouter.get('/square/:homeId/:awayId', NJDController.getSquare)
+publicRouter.get('/bg/:homeId/:awayId', NJDController.getBackground)
 
 export { publicRouter }
 
