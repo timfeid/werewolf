@@ -28,7 +28,7 @@ export class NJDController {
 
     // ctx.body = res.data.replace(/^([0-9]+K/g, 'm3u8)
     const response = await axios.get(ctx.request.query.url)
-    const url = ctx.request.query.url.replace(/[a-z_0-9]+\.m3u8/, '')
+    const url = ctx.request.query.url.replace(/[a-z_0-9\-]+\.m3u8/, '')
     console.log(url)
     ctx.body = response.data
       .replace(/https:\/\/mf.svc.nhl.com/g, 'https://puddy.zipstreams.net')
