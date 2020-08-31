@@ -33,6 +33,7 @@ export class NJDController {
     ctx.body = response.data
       .replace(/https:\/\/mf.svc.nhl.com/g, 'https://puddy.zipstreams.net')
       .replace(/([0-9]+K)/g, `https://nhl.timfeid.com/proxy/trick/?url=${url}$1`)
+      .replace(/(.*\.ts)/g, `https://nhl.timfeid.com/proxy/trick/?url=${url}$1`)
 
 
   }
