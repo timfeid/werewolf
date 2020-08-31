@@ -43,7 +43,7 @@ export class NJDController {
   }
 
   public static async getImage (koaCtx: Context) {
-    const canvas = createCanvas(443, 251)
+    const canvas = createCanvas(443, 443)
     const ctx = canvas.getContext('2d')
 
     // const homeImage = await axios.get('https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/1.svg')
@@ -67,8 +67,8 @@ export class NJDController {
     const homeImageScaledWidth = homeImg.naturalWidth * .23
     const awayImageScaledHeight = awayImg.naturalHeight * .23
     const awayImageScaledWidth = awayImg.naturalWidth * .23
-    ctx.drawImage(homeImg, 0, 5, homeImageScaledWidth, homeImageScaledHeight)
-    ctx.drawImage(awayImg, canvas.width - awayImageScaledWidth, canvas.height-awayImageScaledHeight-5, awayImageScaledWidth, awayImageScaledHeight)
+    ctx.drawImage(homeImg, 0, canvas.height / 2 - (homeImageScaledHeight / 2) - (homeImageScaledHeight / 4), homeImageScaledWidth, homeImageScaledHeight)
+    ctx.drawImage(awayImg, canvas.width - awayImageScaledWidth, (canvas.height / 2) - (awayImageScaledHeight / 4), awayImageScaledWidth, awayImageScaledHeight)
 
     ctx.antialias = 'gray'
     ctx.font = 'bold 30px Arial'
