@@ -115,4 +115,48 @@ export class NJDController {
     koaCtx.response.body = canvas.toBuffer()
     koaCtx.response.type = 'image/png'
   }
+
+  public static async getSquare (koaCtx: Context) {
+    const canvas = createCanvas(274, 274)
+    const ctx = canvas.getContext('2d')
+
+    // const homeImage = await axios.get('https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/1.svg')
+    // console.log(homeImage.data)
+
+    ctx.fillStyle = '#000000'
+    ctx.imageSmoothingEnabled = true
+
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.fillStyle = '#ffffff'
+    ctx.textAlign = 'center'
+
+    const homeImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/${koaCtx.params.homeId}.svg`
+    const awayImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/${koaCtx.params.awayId}.svg`
+    const [homeImg, awayImg] = await Promise.all([
+      loadImage(homeImageUrl),
+      loadImage(awayImageUrl),
+    ])
+    const homeImageScaledHeight = homeImg.naturalHeight * .2
+    const homeImageScaledWidth = homeImg.naturalWidth * .2
+    const awayImageScaledHeight = awayImg.naturalHeight * .2
+    const awayImageScaledWidth = awayImg.naturalWidth * .2
+    ctx.drawImage(homeImg, 0, 5, homeImageScaledWidth, homeImageScaledHeight)
+    ctx.drawImage(awayImg, canvas.width - awayImageScaledWidth, canvas.height-awayImageScaledHeight-5, awayImageScaledWidth, awayImageScaledHeight)
+
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 5
+    ctx.beginPath()
+    ctx.moveTo(canvas.width, 0)
+    ctx.lineTo(0, canvas.height)
+    ctx.stroke()
+
+    // ctx.antialias = 'gray'
+    // ctx.font = 'bold 80px Arial'
+    // ctx.fillText('vs', homeImageScaledWidth, canvas.height / 2 + 15)
+
+
+    koaCtx.response.body = canvas.toBuffer()
+    koaCtx.response.type = 'image/png'
+  }
 }
