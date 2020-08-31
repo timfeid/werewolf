@@ -49,12 +49,12 @@ export class NJDController {
     // const homeImage = await axios.get('https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/1.svg')
     // console.log(homeImage.data)
 
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = '#000000'
     ctx.imageSmoothingEnabled = true
 
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = '#000000'
+    ctx.fillStyle = '#ffffff'
     ctx.textAlign = 'center'
 
     const homeImageUrl = `https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark/${koaCtx.params.homeId}.svg`
