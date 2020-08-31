@@ -19,6 +19,22 @@ export class NJDController {
     }
   }
 
+  public static async getTrickedUrl (ctx: Context) {
+    // const response = await axios.get(`https://puddy.zipstreams.net/getM3U8.php?id=${ctx.params.id}&league=nhl&date=${ctx.params.date}&cdn=akc`)
+    // const url = `https://puddy.zipstreams.net/m3u8/${ctx.params.date}/${ctx.params.id}akc`
+    // console.log(url)
+    // const response = await axios.get(url)
+    // const res = await axios.get(response.data)
+
+    // ctx.body = res.data.replace(/^([0-9]+K/g, 'm3u8)
+    const response = await axios.get(ctx.request.query.url)
+    ctx.body = response.data
+      .replace(/https:\/\/mf.svc.nhl.com/g, 'https://puddy.zipstreams.net')
+      .replace(/([0-9]+K)/g, 'https://nhl.timfeid.com/njd/trick/?url=https://hlslive-akc.med2.med.nhl.com/hdnts=exp=1598960519~acl=/*~id=nhlGatewayId:7325656~data=2000017631~hmac=0ba96cefdcad399e520d8d114d4517acc6388a7fd691114df815a7d0d90cf31e/b5c0ab4ec20c518e5530e771a7b02134/ls03/nhl/2020/08/31/NHL_GAME_VIDEO_VGKVAN_M2_NATIONAL_20200831_1598633593115/$1')
+
+
+  }
+
   public static async get (ctx: Context) {
     const response = await axios.get('https://puddy.zipstreams.net/ha.m3u8?url=' + ctx.request.query.url)
 
