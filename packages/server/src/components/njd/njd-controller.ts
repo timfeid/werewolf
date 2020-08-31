@@ -67,12 +67,12 @@ export class NJDController {
     const homeImageScaledWidth = homeImg.naturalWidth * .23
     const awayImageScaledHeight = awayImg.naturalHeight * .23
     const awayImageScaledWidth = awayImg.naturalWidth * .23
-    ctx.drawImage(homeImg, 0, canvas.height / 2 - homeImageScaledHeight / 2, homeImageScaledWidth, homeImageScaledHeight)
-    ctx.drawImage(awayImg, canvas.width - awayImageScaledWidth, canvas.height / 2 - awayImageScaledHeight / 2, awayImageScaledWidth, awayImageScaledHeight)
+    ctx.drawImage(homeImg, 0, 5, homeImageScaledWidth, homeImageScaledHeight)
+    ctx.drawImage(awayImg, canvas.width - awayImageScaledWidth, canvas.height-awayImageScaledHeight-5, awayImageScaledWidth, awayImageScaledHeight)
 
     ctx.antialias = 'gray'
     ctx.font = 'bold 30px Arial'
-    ctx.fillText('vs', homeImageScaledWidth, canvas.height / 2 + 15)
+    // ctx.fillText('vs', homeImageScaledWidth, canvas.height / 2 + 15)
 
 
     koaCtx.response.body = canvas.toBuffer()
