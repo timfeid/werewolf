@@ -18,6 +18,12 @@ export class NJDController {
       console.log(e)
     }
   }
+  
+  public static async getKey (ctx: Context) {
+      const response = await axios.get('https://api.nhl66.ir/api/get_key_url'+ctx.request.query.url)
+      ctx.body = response.data
+      
+  }
 
   public static async getTrickedUrl (ctx: Context) {
     // const response = await axios.get(`https://puddy.zipstreams.net/getM3U8.php?id=${ctx.params.id}&league=nhl&date=${ctx.params.date}&cdn=akc`)
