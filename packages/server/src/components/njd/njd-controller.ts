@@ -21,7 +21,9 @@ export class NJDController {
   
   public static async getKey (ctx: Context) {
       const response = await axios.get('https://api.nhl66.ir/api/get_key_url'+ctx.request.query.url)
-      ctx.set('Content-Type', 'text/html')
+      ctx.set('Content-Type', 'text/html; charset=utf-8')
+      ctx.set('Content-Length', '16')
+      console.log(response.data)
       ctx.body = response.data
       
   }
