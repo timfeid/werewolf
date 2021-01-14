@@ -25,7 +25,7 @@ export class NJDController {
     //   ctx.set('Content-Length', '16')
     //   console.log(response.data)
       console.log(response)
-      ctx.body = response.data
+      ctx.body = Buffer.from(response.data, 'utf8').toString()
       
   }
 
