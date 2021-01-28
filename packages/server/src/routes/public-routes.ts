@@ -11,7 +11,7 @@ publicRouter.get('/cards', CardController.list)
 
 publicRouter.get('/ha.m3u8', NJDController.m3u8)
 publicRouter.get('/get-key', NJDController.getKey)
-publicRouter.get('/m3u8/:id/:date', NJDController.getUrl)
+publicRouter.get('/m3u8/:id', NJDController.getUrl)
 publicRouter.get('/trick', NJDController.getTrickedUrl)
 publicRouter.get('/proxy', NJDController.proxy)
 publicRouter.get('/card/:homeId/:awayId', NJDController.getImage)

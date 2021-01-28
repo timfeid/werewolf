@@ -5,7 +5,7 @@ import { Canvas, createCanvas, registerFont, loadImage } from 'canvas'
 export class NJDController {
   public static async m3u8 (ctx: Context) {
     try {
-      const response = await axios.get('https://puddy.zipstreams.net/ha.m3u8?url='+ctx.request.query.url)
+      const response = await axios.get('https://api.nhl66.ir/api/sport/schedule')
 
 
 
@@ -18,7 +18,7 @@ export class NJDController {
       console.log(e)
     }
   }
-  
+
   public static async getKey (ctx: Context) {
       const response = await axios.get('https://api.nhl66.ir/api/get_key_url'+ctx.request.query.url, {responseType:"arrayBuffer"})
       ctx.set('Content-Type', 'text/html; charset=utf-8')
@@ -26,7 +26,7 @@ export class NJDController {
     //   console.log(response.data)
       console.log(response)
       ctx.body = Buffer.from(response.data, 'utf8').toString()
-      
+
   }
 
   public static async getTrickedUrl (ctx: Context) {
@@ -64,11 +64,18 @@ export class NJDController {
 
   public static async getUrl (ctx: Context) {
     // const response = await axios.get(`https://puddy.zipstreams.net/getM3U8.php?id=${ctx.params.id}&league=nhl&date=${ctx.params.date}&cdn=akc`)
-    const url = `https://puddy.zipstreams.net/m3u8/${ctx.params.date}/${ctx.params.id}akc`
-    console.log(url)
-    const response = await axios.get(url)
+    const response = await axios.get('https://api.nhl66.ir/api/sport/schedule')
 
-    ctx.body = response.data
+    // const url = `https://puddy.zipstreams.net/m3u8/${ctx.params.date}/${ctx.params.id}akc`
+    // console.log(url)
+    // const response = await axios.get(url)
+
+    const game = response.data.games.find(game => game.streams.find(stream => stream.mediaid === ctx.params.id))
+
+    if (game) {
+      ctx.body = game.streams.find(stream => stream.mediaid === ctx.params.id).url
+    }
+
   }
 
   public static async getImage (koaCtx: Context) {
