@@ -5,3 +5,4 @@
 !yarn.lock
 !lerna.json
 */**/node_modules
+*/**/dist

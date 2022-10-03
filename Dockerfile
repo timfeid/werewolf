@@ -23,4 +23,5 @@ RUN yarn global add lerna
 COPY . .
 
 RUN lerna bootstrap
-
+WORKDIR /usr/src/app/packages/ui
+RUN yarn build

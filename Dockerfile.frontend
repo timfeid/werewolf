@@ -1,9 +1,5 @@
 FROM baseimg
 
-WORKDIR /usr/src/app/packages/ui
-
-RUN yarn build
-
 FROM nginx:1.15.5-alpine
 
 COPY --from=baseimg /usr/src/app/packages/ui/dist /usr/share/nginx/html
