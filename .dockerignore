@@ -3,6 +3,7 @@
 !.env
 !package.json
 !yarn.lock
+!tsconfig.json
 !lerna.json
 */**/node_modules
 */**/dist
