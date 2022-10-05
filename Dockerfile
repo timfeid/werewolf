@@ -24,7 +24,7 @@ COPY . .
 
 RUN lerna bootstrap
 WORKDIR /usr/src/app/packages/ui
-RUN echo "VUE_APP_API_ENDPOINT=http://timfeid.com:8082/" >> .env
-RUN echo "VUE_APP_SOCKET_URL=http://timfeid.com:3052/" >> .env
+RUN echo "VUE_APP_API_ENDPOINT=https://wolf.timfeid.com/api/" >> .env
+RUN echo "VUE_APP_SOCKET_URL=https://socket.timfeid.com/" >> .env
 
 RUN yarn build
