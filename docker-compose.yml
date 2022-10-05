@@ -1,5 +1,8 @@
 version: '3'
 services:
+  redis:
+    image: redis:7.0.5
+
   frontend:
     image: 127.0.0.1:5000/frontend
     build:

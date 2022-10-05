@@ -1,3 +1,5 @@
 FROM baseimg
 
-CMD ts-node /usr/src/app/packages/socket/src/server.ts
+WORKDIR /usr/src/app/packages/server
+
+CMD yarn ts-node /usr/src/app/packages/socket/src/server.ts
