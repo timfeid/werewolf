@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - 80:8080
+      - 8000:80
 
   backend:
     image: 127.0.0.1:5000/backend
@@ -18,12 +18,17 @@ services:
       dockerfile: Dockerfile.server
     ports:
       - 8082:8082
+    environment:
+      - REDIS_HOSTNAME=redis
+      - REDIS_PORT=6379
 
-
-  backend:
+  socket:
     image: 127.0.0.1:5000/socket
     build:
       context: .
       dockerfile: Dockerfile.socket
     ports:
       - 3052:3052
+    environment:
+      - REDIS_HOSTNAME=redis
+      - REDIS_PORT=6379
